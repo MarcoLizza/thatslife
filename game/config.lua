@@ -4,7 +4,7 @@ return {
     cheat = false
   },
   display = {
-    scale = 2
+    scale = -1
   },
   starfield = {
     layers = 4,

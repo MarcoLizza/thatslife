@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local constants = require('game.constants')
 local config = require('game.config')
 local Input = require('lib.input')
 local Stateful = require('lib.stateful')
@@ -32,10 +33,36 @@ local _stateful = nil
 local _time = 0
 local _input = nil
 
+-- LOCAL FUNCTIONS -------------------------------------------------------------
+
+local function auto_size(ratio)
+  if config.display.scale == -1 then
+    local width, height = love.window.getDesktopDimensions()
+    width = width * ratio
+    height = height * ratio
+    while true do
+      local scale = config.display.scale + 1
+      local w, h = constants.SCREEN_WIDTH * scale, constants.SCREEN_HEIGHT * scale
+      if w > width or h > height then
+        -- We don't pass any specific flag since we want to keep the ones we
+        -- chose at the beginning.
+        love.window.setMode(constants.WINDOW_WIDTH, constants.WINDOW_HEIGHT)
+        break
+      end
+      config.display.scale = scale
+      constants.WINDOW_WIDTH = w
+      constants.WINDOW_HEIGHT = h
+    end
+  end
+end
+
 -- ENGINE CALLBACKS ------------------------------------------------------------
 
 function love.load(args)
   if args[#args] == '-debug' then require('mobdebug').start() end
+
+  -- Autosize the window, keeping a 5% display margin.
+  auto_size(0.95)
 
   -- We stay true to a real "pixelized" feel.
   love.graphics.setDefaultFilter('nearest', 'nearest', 1)

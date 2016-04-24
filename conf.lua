@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local config = require('game.config')
 local constants = require('game.constants')
 
 -- ENGINE CALLBACKS ------------------------------------------------------------
@@ -32,10 +33,18 @@ function love.conf(configuration)
   configuration.console = false
 
   configuration.window.title = constants.WINDOW_TITLE
-  configuration.window.width = constants.WINDOW_WIDTH
-  configuration.window.height = constants.WINDOW_HEIGHT
-
-  configuration.window.display = 2
+  -- If the scale is specified, then the window size is correct and can be used.
+  -- Otherwise, we create a 1x1 window hidden somewhere outsize the display that
+  -- will be resized in the "love.load()" callback.
+  if config.display.scale ~= -1 then
+    configuration.window.width = constants.WINDOW_WIDTH
+    configuration.window.height = constants.WINDOW_HEIGHT
+  else
+    configuration.window.width = 1
+    configuration.window.height = 1
+    configuration.window.x = 9999
+    configuration.window.y = 9999
+  end
 
   configuration.modules.audio = true     -- Enable the audio module (boolean)
   configuration.modules.event = true     -- Enable the event module (boolean)
