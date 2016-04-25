@@ -4,6 +4,7 @@ return {
     cheat = false
   },
   display = {
+    ratio = 0.95,
     scale = -1
   },
   starfield = {

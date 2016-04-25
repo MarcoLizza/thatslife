@@ -61,8 +61,8 @@ end
 function love.load(args)
   if args[#args] == '-debug' then require('mobdebug').start() end
 
-  -- Autosize the window, keeping a 5% display margin.
-  auto_size(0.95)
+  -- Autosize the window, keeping a margin.
+  auto_size(config.display.ratio or 0.95)
 
   -- We stay true to a real "pixelized" feel.
   love.graphics.setDefaultFilter('nearest', 'nearest', 1)
