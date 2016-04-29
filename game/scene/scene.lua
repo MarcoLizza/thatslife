@@ -44,8 +44,10 @@ end
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Scene:initialize()
+function Scene:initialize(age)
   self.layers = {}
+  self.age = age
+  self.alpha = 1
 end
 
 function Scene:reset()
@@ -75,9 +77,11 @@ function Scene:update(dt)
 end
 
 function Scene:draw()
+  love.graphics.setColor({ 0, 0, 0, math.floor(255 * self.alpha) })
   for _, layer in ipairs(self.layers) do
     layer:draw()
   end
+--  love.graphics.setColor({ 255, 255, 255 })
 end
 
 -- END OF MODULE ---------------------------------------------------------------

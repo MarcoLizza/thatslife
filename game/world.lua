@@ -24,6 +24,7 @@ freely, subject to the following restrictions:
 
 local constants = require('game.constants')
 local Scene = require('game.scene.scene')
+local tweener = require('lib.tweener')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -34,29 +35,47 @@ local world = {
 
 local PARAMS = {
   {
-    position = { 0, 0 },
-    depth = 0,
-    offset = 0,
-    speed = 10,
-    file = 'assets/1gam.png',
-    alpha = 0.5
+    age = 0,
+    layers = {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/1gam.png',
+        alpha = 0.5
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 0,
+        file = 'assets/love2d.png',
+        alpha = 1
+      }
+    }
   },
   {
-    position = { 0, 0 },
-    depth = 1,
-    offset = 0,
-    speed = 5,
-    file = 'assets/1gam.png',
-    alpha = 0.5
-  },
-  {
-    position = { 0, 0 },
-    depth = 2,
-    offset = 0,
-    speed = 0,
-    file = 'assets/love2d.png',
-    alpha = 1
-  },
+    age = 10,
+    layers =  {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/1gam.png',
+        alpha = 0.5
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 0,
+        file = 'assets/love2d.png',
+        alpha = 1
+      }
+    }
+  }
 }
 
 -- LOCAL FUNCTIONS -------------------------------------------------------------
@@ -67,15 +86,24 @@ function world:initialize()
   self.width = constants.SCREEN_WIDTH
   self.height = constants.SCREEN_HEIGHT
 
-  self.scene = Scene.new()
-  self.scene:initialize()
+  self.scenes = {}
 end
 
 function world:reset()
-  self.scene:reset()
   for _, params in ipairs(PARAMS) do
-    self.scene:push(params)
+    local scene = Scene.new()
+    scene:initialize(params.age)
+--    self.scene:reset()
+    for _, layer in ipairs(params.layers) do
+      scene:push(layer)
+    end
+    self.scenes[#self.scenes + 1] = scene
   end
+  
+  self.age = 0
+  
+  self.current = self.scenes[1]
+  self.next = nil
 end
 
 function world:input(keys, dt)
@@ -88,21 +116,69 @@ function world:input(keys, dt)
   end
 
   local direction = 'none'
-  if delta > 0 then
+  if delta < 0 then -- reverse the scroll direction to simulate movement
     direction = 'right'
-  elseif delta < 0 then
+  elseif delta > 0 then
     direction = 'left'
   end
 
-  self.scene:scroll(direction, dt)
+  self.current:scroll(direction, dt)
+  if self.next then
+    self.next:scroll(direction, dt)
+  end
+
+  -- We don't update the current age while fading between scenes. This doesn't
+  -- make sense and render the thinks difficult.
+  if self.fader then
+    return
+  end
+
+  -- Update the age according to the player input. It is more like a
+  -- "distance".
+  self.age = self.age + delta * dt
+
+  -- Find the scene to which the current age/distance belongs to.
+  local next = nil
+  for _, scene in ipairs(self.scenes) do
+    if scene.age > self.age then
+      break
+    end
+    next = scene
+  end
+  
+  -- If the current scene is different from the one we are moving to, create
+  -- a linear tweener to fade to the next one.
+  if self.current ~= next then
+    self.next = next
+    self.fader = tweener.linear(1, function(ratio)
+          self.next.alpha = ratio
+          self.current.alpha = 1 - ratio
+          return nil
+        end)
+  end
 end
 
 function world:update(dt)
-  self.scene:update(dt)
+  if self.fader then
+    local _, running = self.fader(dt)
+    if not running then
+      self.fader = nil
+      self.current = self.next
+      self.next = nil
+    end
+  end
+
+  self.current:update(dt)
+  if self.next then
+    self.next:update(dt)
+  end
 end
 
 function world:draw()
-  self.scene:draw()
+  self.current:draw()
+  if self.next then
+    self.next:draw()
+  end
 end
 
 -- END OF MODULE -------------------------------------------------------------
