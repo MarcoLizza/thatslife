@@ -268,11 +268,9 @@ function graphics.image(image, x, y, ox, oy, width, height, alpha)
 
   local scale = config.display.scale
 
-  local sx, sy = x * scale, y * scale
-
   love.graphics.setColor({ 255, 255, 255, alpha })
-  love.graphics.setScissor(sx, sy, width * scale, height * scale)
-  love.graphics.draw(image, sx, sy, 0, 1, 1, ox, oy)
+  love.graphics.setScissor(x * scale, y * scale, width * scale, height * scale)
+  love.graphics.draw(image, x, y, 0, 1, 1, ox, oy)
   love.graphics.setScissor()
 end
 

@@ -46,7 +46,7 @@ end
 
 function Layer:initialize(params)
   self.depth = params.depth
-  self.position = { 0, 0 }
+  self.position = { unpack(params.position) }
   self.offset = params.offset or 0
   self.speed = params.speed or 0
 --  self.callback = params.callback
@@ -74,7 +74,7 @@ function Layer:draw()
   local height = image:getHeight()
 
   local x, y = unpack(self.position)
-  x = x + self.offset
+  x = x + math.floor(self.offset)
 
   local asx, atx, aw, bsx, btx, bw
 
@@ -84,7 +84,7 @@ function Layer:draw()
     -- |    |  |     |
     -- +----+--+     |
     --      +--------+
-    aw = width - x
+    aw = width + x
     asx = -x
     atx = 0
     bw = -x
@@ -98,7 +98,7 @@ function Layer:draw()
     --      +--------+
     aw = x
     asx = width - x
-    atx = x
+    atx = 0
     bw = width - x
     bsx = 0
     btx = x

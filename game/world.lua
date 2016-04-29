@@ -34,6 +34,7 @@ local world = {
 
 local PARAMS = {
   {
+    position = { 0, 0 },
     depth = 0,
     offset = 0,
     speed = 10,
@@ -41,6 +42,7 @@ local PARAMS = {
     alpha = 0.5
   },
   {
+    position = { 0, 0 },
     depth = 1,
     offset = 0,
     speed = 5,
@@ -48,6 +50,7 @@ local PARAMS = {
     alpha = 0.5
   },
   {
+    position = { 0, 0 },
     depth = 2,
     offset = 0,
     speed = 0,
