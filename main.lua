@@ -91,7 +91,7 @@ function love.load(args)
       }, {
         level = 0
       })
-  _stateful:switch_to('splash')
+  _stateful:switch_to('game')
 end
 
 function love.keypressed(key, scancode, isrepeat)

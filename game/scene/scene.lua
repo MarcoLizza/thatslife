@@ -22,30 +22,66 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
-local config = require('game.config')
+local Layer = require('game.scene.layer')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
-local constants = {
+local Scene = {
 }
 
--- MODULE VARIABLES ------------------------------------------------------------
+-- MODULE OBJECT CONSTRUCTOR ---------------------------------------------------
 
-constants.VERSION = '0.1.0'
+Scene.__index = Scene
 
-constants.IDENTITY = 'ThatsLife'
+function Scene.new()
+  local self = setmetatable({}, Scene)
+  return self
+end
 
-constants.SCREEN_WIDTH = 400
-constants.SCREEN_HEIGHT = 400
-constants.SCREEN_RECT = { 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT }
-constants.SCREEN_CENTER = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT / 2 }
+-- LOCAL CONSTANTS -------------------------------------------------------------
 
-constants.WINDOW_WIDTH = constants.SCREEN_WIDTH * config.display.scale
-constants.WINDOW_HEIGHT = constants.SCREEN_HEIGHT * config.display.scale
-constants.WINDOW_TITLE = string.format('.: %s :. (%s)', string.upper(constants.IDENTITY), constants.VERSION)
+-- LOCAL FUNCTIONS -------------------------------------------------------------
+
+-- MODULE FUNCTIONS ------------------------------------------------------------
+
+function Scene:initialize()
+  self.layers = {}
+end
+
+function Scene:reset()
+  self.layers = {}
+end
+
+function Scene:push(params)
+  local layer = Layer.new()
+  layer:initialize(params)
+
+  table.insert(self.layers, layer)
+  table.sort(self.layers, function(a, b)
+        return a.depth > b.depth
+      end)
+end
+
+function Scene:scroll(direction, dt)
+  for _, layer in ipairs(self.layers) do
+    layer:scroll(direction, dt)
+  end
+end
+
+function Scene:update(dt)
+  for _, layer in ipairs(self.layers) do
+    layer:update(dt)
+  end
+end
+
+function Scene:draw()
+  for _, layer in ipairs(self.layers) do
+    layer:draw()
+  end
+end
 
 -- END OF MODULE ---------------------------------------------------------------
 
-return constants
+return Scene
 
 -- END OF FILE -----------------------------------------------------------------

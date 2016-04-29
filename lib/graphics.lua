@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local config = require('game.config')
 local constants = require('game.constants')
 
 -- MODULE DECLARATION ----------------------------------------------------------
@@ -254,21 +255,42 @@ function graphics.line(x0, y0, x1, y1, color, alpha, width)
   love.graphics.line({ x0, y0, x1, y1 })
 end
 
+function graphics.image(image, x, y, ox, oy, width, height, alpha)
+  ox = ox or 0
+  oy = oy or 0
+  width = width or image:getWidth()
+  height = height or image:getHeight()
+  alpha = alpha or 255
+
+  if alpha == 0 then
+    return
+  end
+
+  local scale = config.display.scale
+
+  local sx, sy = x * scale, y * scale
+
+  love.graphics.setColor({ 255, 255, 255, alpha })
+  love.graphics.setScissor(sx, sy, width * scale, height * scale)
+  love.graphics.draw(image, sx, sy, 0, 1, 1, ox, oy)
+  love.graphics.setScissor()
+end
+
 function graphics.text(text, rectangle, face, color, halign, valign, scale, alpha)
   color = type(color) == 'table' and color or COLORS[color]
   alpha = alpha or 255
   halign = halign or 'center'
   valign = valign or 'middle'
   scale = scale or 1
-  
+
   if alpha == 0 then
     return
   end
-  
+
   local font = FONTS[face]
-  
+
   local x, y = rectangle[1], rectangle[2]
-  
+
   if rectangle[3] and rectangle[4] then
     local width = font:getWidth(text) * scale
     local height = font:getHeight() * scale
@@ -283,9 +305,9 @@ function graphics.text(text, rectangle, face, color, halign, valign, scale, alph
       y = (rectangle[4] - rectangle[2] - height) / 2
     end
   end
-  
+
   local r, g, b = unpack(color)
-  
+
   love.graphics.push()
   love.graphics.scale(scale)
   love.graphics.setFont(font)
