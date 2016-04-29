@@ -74,7 +74,7 @@ function Layer:draw()
   local height = image:getHeight()
 
   local x, y = unpack(self.position)
-  x = x + math.floor(self.offset)
+  x = (x + math.floor(self.offset)) % width
 
   local asx, atx, aw, bsx, btx, bw
 
