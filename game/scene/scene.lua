@@ -77,9 +77,8 @@ function Scene:update(dt)
 end
 
 function Scene:draw()
-  love.graphics.setColor({ 255, 255, 255, math.floor(255 * self.alpha) })
   for _, layer in ipairs(self.layers) do
-    layer:draw()
+    layer:draw(self.alpha)
   end
 --  love.graphics.setColor({ 255, 255, 255 })
 end

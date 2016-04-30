@@ -51,7 +51,7 @@ function Layer:initialize(params)
   self.speed = params.speed or 0
 --  self.callback = params.callback
   self.image = love.graphics.newImage(params.file)
-  self.alpha = params.alpha or 1
+  self.alpha = params.alpha -- can be nil, won't fade at all
 end
 
 function Layer:scroll(direction, dt)
@@ -68,7 +68,7 @@ function Layer:update(dt)
   -- This could be useful to implement special layer effects.
 end
 
-function Layer:draw()
+function Layer:draw(alpha)
   local image = self.image
   local width = image:getWidth()
   local height = image:getHeight()
@@ -104,10 +104,11 @@ function Layer:draw()
     btx = x
   end
 
-  local alpha = math.floor(255 * self.alpha)
+  alpha = self.alpha and alpha * self.alpha or 1
+  local a = math.floor(255 * alpha)
 
-  graphics.image(self.image, atx, y, asx, 0, aw, height, alpha)
-  graphics.image(self.image, btx, y, bsx, 0, bw, height, alpha)
+  graphics.image(self.image, atx, y, asx, 0, aw, height, a)
+  graphics.image(self.image, btx, y, bsx, 0, bw, height, a)
 end
 
 -- END OF MODULE ---------------------------------------------------------------
