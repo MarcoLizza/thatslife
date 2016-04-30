@@ -33,6 +33,50 @@ local world = {
 
 -- LOCAL CONSTANTS -------------------------------------------------------------
 
+--local PARAMS = {
+--  {
+--    age = 0,
+--    layers = {
+--      {
+--        position = { 0, 0 },
+--        depth = 0,
+--        offset = 0,
+--        speed = 50,
+--        file = 'assets/1gam.png',
+--        alpha = 0.5
+--      },
+--      {
+--        position = { 0, 0 },
+--        depth = 1,
+--        offset = 0,
+--        speed = 0,
+--        file = 'assets/love2d.png',
+--        alpha = 1
+--      }
+--    }
+--  },
+--  {
+--    age = 10,
+--    layers =  {
+--      {
+--        position = { 0, 0 },
+--        depth = 0,
+--        offset = 0,
+--        speed = 50,
+--        file = 'assets/1gam.png',
+--        alpha = 0.5
+--      },
+--      {
+--        position = { 0, 0 },
+--        depth = 1,
+--        offset = 0,
+--        speed = 0,
+--        file = 'assets/love2d.png',
+--        alpha = 1
+--      }
+--    }
+--  }
+--}
 local PARAMS = {
   {
     age = 0,
@@ -43,34 +87,18 @@ local PARAMS = {
         offset = 0,
         speed = 50,
         file = 'assets/1gam.png',
-        alpha = 0.5
-      },
-      {
-        position = { 0, 0 },
-        depth = 1,
-        offset = 0,
-        speed = 0,
-        file = 'assets/love2d.png',
         alpha = 1
       }
     }
   },
   {
-    age = 10,
+    age = 5,
     layers =  {
       {
         position = { 0, 0 },
         depth = 0,
         offset = 0,
         speed = 50,
-        file = 'assets/1gam.png',
-        alpha = 0.5
-      },
-      {
-        position = { 0, 0 },
-        depth = 1,
-        offset = 0,
-        speed = 0,
         file = 'assets/love2d.png',
         alpha = 1
       }
