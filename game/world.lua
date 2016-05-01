@@ -22,7 +22,11 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local Player = require('game.entities.player')
+local Smoke = require('game.entities.smkoe')
+local Bubble = require('game.entities.bubble')
 local constants = require('game.constants')
+local Entities = require('game.entities')
 local Scene = require('game.scene.scene')
 local tweener = require('lib.tweener')
 
@@ -114,24 +118,38 @@ function world:initialize()
   self.width = constants.SCREEN_WIDTH
   self.height = constants.SCREEN_HEIGHT
 
-  self.scenes = {}
+  self.entities = Entities.new()
+  self.entities:initialize()
 end
 
 function world:reset()
+  -- Reload all the scene
+  self.scenes = {}
   for _, params in ipairs(PARAMS) do
     local scene = Scene.new()
     scene:initialize(params.age)
---    self.scene:reset()
     for _, layer in ipairs(params.layers) do
       scene:push(layer)
     end
     self.scenes[#self.scenes + 1] = scene
   end
   
+  -- Reset the world "age" to zero. Also, pick the first scene as the current
+  -- one and clear the "next" scene reference (will be detected automatically
+  -- depending on the age)
   self.age = 0
-  
   self.current = self.scenes[1]
   self.next = nil
+
+  -- Reset the entity manager and add the the player one at the center of the
+  -- screen.
+  self.entities:reset()
+  local player = Player.new()
+  player:initialize({
+        position = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT / 2},
+        angle = 0
+      })
+  self.entities:push(player)
 end
 
 function world:input(keys, dt)
