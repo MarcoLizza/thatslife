@@ -87,6 +87,10 @@ function Entities:draw()
 end
 
 function Entities:push(entity)
+  -- We store thre entity-manager reference in the entity itself. Could be
+  -- useful.
+  entity.entities = self
+
   -- We enqueue the added entries in a temporary list. Then, in the "update"
   -- function we merge the entries with the active entries list and sort it.
   -- 

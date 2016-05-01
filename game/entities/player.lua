@@ -27,6 +27,7 @@ local graphics = require('lib.graphics')
 local soop = require('lib.soop')
 
 -- MODULE DECLARATION ----------------------------------------------------------
+
 -- MODULE OBJECT CONSTRUCTOR ---------------------------------------------------
 
 local Player = soop.class(Entity)
@@ -38,8 +39,7 @@ local Player = soop.class(Entity)
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Player:initialize(entities, parameters)
-  -- self.__base:initialize(parameters)
-  local base = self.__base
+  local base = self:base()
   base.initialize(self, parameters)
   
   self.entities = entities

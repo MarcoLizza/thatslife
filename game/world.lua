@@ -23,7 +23,7 @@ freely, subject to the following restrictions:
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
 local Player = require('game.entities.player')
-local Smoke = require('game.entities.smkoe')
+local Smoke = require('game.entities.smoke')
 local Bubble = require('game.entities.bubble')
 local constants = require('game.constants')
 local Entities = require('game.entities')
@@ -218,6 +218,8 @@ function world:update(dt)
   if self.next then
     self.next:update(dt)
   end
+  
+  self.entities:update(dt)
 end
 
 function world:draw()
@@ -225,6 +227,8 @@ function world:draw()
   if self.next then
     self.next:draw()
   end
+
+  self.entities:draw()
 end
 
 -- END OF MODULE -------------------------------------------------------------
