@@ -44,10 +44,11 @@ end
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Scene:initialize(age)
+function Scene:initialize(age, callback)
   self.layers = {}
   self.age = age
   self.alpha = 1
+  self.callback = callback
 end
 
 function Scene:reset()
@@ -80,7 +81,10 @@ function Scene:draw()
   for _, layer in ipairs(self.layers) do
     layer:draw(self.alpha)
   end
---  love.graphics.setColor({ 255, 255, 255 })
+
+  if self.callback then
+    self.callback()
+  end
 end
 
 -- END OF MODULE ---------------------------------------------------------------
