@@ -32,6 +32,7 @@ local Stateful = require('lib.stateful')
 local _stateful = nil
 local _time = 0
 local _input = nil
+local _canvas = nil
 
 -- LOCAL FUNCTIONS -------------------------------------------------------------
 
@@ -65,7 +66,15 @@ function love.load(args)
   auto_size(config.display.ratio or 0.95)
 
   -- We stay true to a real "pixelized" feel.
+  --
+  -- Note that we need need to set the filter before creating the canvas in
+  -- order the setting to be used by the canvas itself!
   love.graphics.setDefaultFilter('nearest', 'nearest', 1)
+
+  -- Create the offscreen canvas, so that no scaling mumbo-jumbo need to be
+  -- performed during the drawing itself.
+  _canvas = love.graphics.newCanvas(constants.SCREEN_WIDTH,
+      constants.SCREEN_HEIGHT)
 
   -- Initializes the input handler.
   _input = Input.new()
@@ -120,16 +129,16 @@ function love.update(dt)
 end
 
 function love.draw()
-  love.graphics.push()
-  love.graphics.scale(config.display.scale)
-
+  love.graphics.setCanvas(_canvas)
+  love.graphics.clear()
   _stateful:draw()
-
-  love.graphics.pop()
-
   if config.debug.fps then
     love.graphics.print(love.timer.getFPS() .. '\n' .. _time, 0, 0)
   end
+  love.graphics.setCanvas()
+
+  local scale = config.display.scale
+  love.graphics.draw(_canvas, 0, 0, 0, scale, scale)
 end
 
 -- END OF FILE -----------------------------------------------------------------
