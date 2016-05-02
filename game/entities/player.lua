@@ -38,11 +38,10 @@ local Player = soop.class(Entity)
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Player:initialize(entities, parameters)
+function Player:initialize(parameters)
   local base = self:base()
   base.initialize(self, parameters)
   
-  self.entities = entities
   self.type = 'player'
   self.priority = 0
   self.speed = math.pi -- angular speed, of course

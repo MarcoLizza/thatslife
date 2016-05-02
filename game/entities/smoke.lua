@@ -28,6 +28,7 @@ local easing = require('lib.easing')
 local soop = require('lib.soop')
 
 -- MODULE DECLARATION ----------------------------------------------------------
+
 -- MODULE OBJECT CONSTRUCTOR ---------------------------------------------------
 
 local Smoke = soop.class(Entity)
@@ -38,12 +39,10 @@ local Smoke = soop.class(Entity)
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Smoke:initialize(entities, parameters)
---  self.__base:initialize(parameters)
-  local base = self.__base
+function Smoke:initialize(parameters)
+  local base = self.base()
   base.initialize(self, parameters)
-  
-  self.entities = entities
+
   self.type = 'smoke'
   self.priority = 4
   self.ephemeral = true

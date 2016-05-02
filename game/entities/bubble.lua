@@ -39,11 +39,9 @@ local Bubble = soop.class(Entity)
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Bubble:initialize(entities, parameters)
---  self.__base:initialize(parameters)
-  local base = self.__base
+  local base = self.base()
   base.initialize(self, parameters)
-  
-  self.entities = entities
+
   self.type = 'bubble'
   self.priority = 5
   self.ephemeral = true
