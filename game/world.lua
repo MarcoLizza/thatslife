@@ -142,6 +142,16 @@ function world:input(keys, dt)
     delta = delta + 1
   end
 
+  -- Compute the next age according to the player input. It is more like a
+  -- "distance". Please note that we need to bound check for negative
+  -- values, if the user tries to move "back" beyond the very start. It this
+  -- case we also clear the delta movement to stop scrolling.
+  local age = self.age + delta * dt
+  if age < 0 then 
+    age = 0
+    delta = 0
+  end
+
   local direction = 'none'
   if delta < 0 then -- reverse the scroll direction to simulate movement
     direction = 'right'
@@ -160,11 +170,10 @@ function world:input(keys, dt)
     return
   end
 
-  -- Update the age according to the player input. It is more like a
-  -- "distance".
-  self.age = self.age + delta * dt
+  -- Store the new age and finddthe scene to which the current age/distance
+  -- belongs to.
+  self.age = age
 
-  -- Find the scene to which the current age/distance belongs to.
   local next = nil
   for _, scene in ipairs(self.scenes) do
     if scene.age > self.age then
