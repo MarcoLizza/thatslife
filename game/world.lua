@@ -28,6 +28,7 @@ local Bubble = require('game.entities.bubble')
 local constants = require('game.constants')
 local Entities = require('game.entities')
 local Scene = require('game.scene.scene')
+local graphics = require('lib.graphics')
 local tweener = require('lib.tweener')
 
 -- MODULE DECLARATION ----------------------------------------------------------
@@ -107,7 +108,7 @@ function world:reset()
   self.scenes = {}
   for _, params in ipairs(PARAMS) do
     local scene = Scene.new()
-    scene:initialize(params.age)
+    scene:initialize(params.age, params.callback)
     for _, layer in ipairs(params.layers) do
       scene:push(layer)
     end
