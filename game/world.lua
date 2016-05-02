@@ -37,66 +37,40 @@ local world = {
 
 -- LOCAL CONSTANTS -------------------------------------------------------------
 
---local PARAMS = {
---  {
---    age = 0,
---    layers = {
---      {
---        position = { 0, 0 },
---        depth = 0,
---        offset = 0,
---        speed = 50,
---        file = 'assets/1gam.png',
---        alpha = 0.5
---      },
---      {
---        position = { 0, 0 },
---        depth = 1,
---        offset = 0,
---        speed = 0,
---        file = 'assets/love2d.png',
---        alpha = 1
---      }
---    }
---  },
---  {
---    age = 10,
---    layers =  {
---      {
---        position = { 0, 0 },
---        depth = 0,
---        offset = 0,
---        speed = 50,
---        file = 'assets/1gam.png',
---        alpha = 0.5
---      },
---      {
---        position = { 0, 0 },
---        depth = 1,
---        offset = 0,
---        speed = 0,
---        file = 'assets/love2d.png',
---        alpha = 1
---      }
---    }
---  }
---}
 local PARAMS = {
   {
     age = 0,
+    callback = nil,
     layers = {
       {
         position = { 0, 0 },
         depth = 0,
         offset = 0,
         speed = 50,
-        file = 'assets/1gam.png',
+        file = 'assets/S01L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S01L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 5,
+        file = 'assets/S01L01.png',
         alpha = 1
       }
     }
   },
   {
     age = 5,
+    callback = nil,
     layers =  {
       {
         position = { 0, 0 },
@@ -107,6 +81,12 @@ local PARAMS = {
         alpha = 1
       }
     }
+  },
+  {
+    age = 10,
+    callback = function() -- should pass an "alpha" argument, that is the relative scene age
+        end,
+    layers =  { }
   }
 }
 
