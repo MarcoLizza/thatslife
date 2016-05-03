@@ -209,6 +209,47 @@ function graphics.fill(color, alpha)
       constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT)
 end
 
+function graphics.rectangle(x, y, width, height, color, alpha)
+  color = type(color) == 'table' and color or COLORS[color]
+  alpha = alpha or 255
+
+  if alpha == 0 then
+    return
+  end
+
+  local r, g, b = unpack(color)
+  
+  love.graphics.setColor({ r, g, b, alpha })
+  love.graphics.rectangle('fill', x, y,
+      width, height)
+end
+
+function graphics.frame(x, y, width, height, colors, alpha, size, round)
+  color = type(color) == 'table' and color or COLORS[color]
+  alpha = alpha or 255
+  size = size or 1
+  round = round or 0
+
+  if alpha == 0 then
+    return
+  end
+
+  local r, g, b = unpack(colors[1])
+  love.graphics.setColor({ r, g, b, alpha })
+  love.graphics.rectangle('fill', x, y, width, height, round, round)
+  
+  r, g, b = unpack(colors[2])
+  love.graphics.setColor({ r, g, b, alpha })
+  for _ = 1, size do
+    love.graphics.rectangle('line', x, y, width, height, round, round)
+    
+    x = x + 1
+    y = y + 1
+    width = width - 2
+    height = height - 2
+  end
+end
+
 function graphics.square(x, y, size, color, alpha)
   color = type(color) == 'table' and color or COLORS[color]
   alpha = alpha or 255
@@ -286,7 +327,7 @@ function graphics.text(text, rectangle, face, color, halign, valign, scale, alph
 
   local x, y = rectangle[1], rectangle[2]
 
-  if rectangle[3] and rectangle[4] then
+  if rectangle[3] and rectangle[4] then -- FIXME: width/height or right/bottom???
     local width = font:getWidth(text) * scale
     local height = font:getHeight() * scale
     if halign == 'right' then
