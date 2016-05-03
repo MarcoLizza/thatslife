@@ -41,51 +41,57 @@ end
 
 -- LOCAL CONSTANTS -------------------------------------------------------------
 
+local PHRASES = require('assets.data.phrases')
+
 -- LOCAL FUNCTIONS -------------------------------------------------------------
+
+-- 'idle', 'fade-in', 'display', 'fade-out'
+
+local offset(rectangle, ox, oy)
+  local left, top, right, bottom = unpack(rectangle)
+  left = left + ox
+  top = top + oy
+  right = right - ox
+  bottom = bottom - oy
+  return { left, top, right, bottom }
+end
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Hud:initialize(world)
-  self.world = world
+function Hud:initialize()
+  self.message = nil
+  self.state = nil
+  self.position = nil
+  self.canvas = love.graphics.newCanvas(math.floor(constants.SCREEN_WIDTH * 0.33), math.floor(constants.SCREEN_HEIGHT * 0.5))
 end
 
 function Hud:update(dt)
+--  self.x = nil
+--  self.y = nil
+--  self.width = math.max(constants.SCREEN_WIDTH / 2, text_width)
+--  self.height = math.max(constants.SCREEN_HEIGHT / 4, text_height)
+--  width, height = graphics.measure(message)
 end
 
 function Hud:draw()
-  local world = self.world
-  local entities = world.entities
-
-  -- Find the player entity (we should cache it?)
-  local player = entities:find(function(entity)
-        return entity.type == 'player'
-      end)
-
-  -- Retrieve and display both the player life amount and score.
-  local life = math.floor(player and player.life or 0)
-  local score = math.floor(world.score)
-
-  -- If the player entity is nowhere to be found, then it's dead. So, overlay
-  -- a "GAME OVER" message and bail out!
-  if not player then
-    graphics.fill('black', 191)
-    graphics.text('GAME OVER',
-        { 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT },
-        'retro-computer', 'white', 'center', 'middle', 3)
-    graphics.text(string.format('SCORE: %d', score),
-        { 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT * 0.70 },
-        'retro-computer', 'white', 'center', 'bottom', 2)
-    graphics.text('PRESS Z TO RESTART',
-        { 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT * 0.90 },
-        'retro-computer', 'white', 'center', 'bottom', 1)
-  else
-    graphics.text(string.format('LIFE: %d', life),
-        { 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT },
-        'retro-computer', 'white', 'left', 'bottom', 1)
-    graphics.text(string.format('SCORE: %d', score),
-        { 0, 0, constants.SCREEN_WIDTH, constants.SCREEN_HEIGHT },
-        'retro-computer', 'yellow', 'right', 'bottom', 1)
+  if not self.message then
+    return
   end
+
+  love.graphics.setCanvas(self.canvas)
+  graphics.frame(0, 0, width, height, {}, 255, 2, 4)
+  graphics.text(message, offset(self.position, 4, 4),
+      'retro-computer', 'yellow', 'left', 'top')
+  love.graphics.setCanvas()
+  
+  love.graphics.setScissor(x, y, width, height)
+  love.graphics.setColor(255, 255, 255, alpha)
+  love.graphics.draw(self.canvas, x, y)
+  love.graphics.setScissor()
+end
+
+function Hud:control(direction)
+  self.direction = direction
 end
 
 -- END OF MODULE ---------------------------------------------------------------
