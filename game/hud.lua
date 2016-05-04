@@ -84,27 +84,34 @@ end
 function Hud:reset()
   self.message = nil
   self.time = 0
-  self.delay = 10
+  self.delay = 2
   self.index = 0
+  self.delta = 0
 end
 
 function Hud:update(dt)
   -- A message is currently displayed, so just advance it's relative ticker.
   if self.message then
-    self.message.time = self.message.time + dt
+    self.message.time = self.message.time + self.delta * dt
     return
   end
 
   -- Update the message ticker, bailing out while the needed amount of delay
   -- is not reached. Otherwise, continue by clearing the counter.
-  self.time = self.time + dt
-  if self.time <= self.delay then
+  self.time = self.time + self.delta * dt
+  
+  local direction
+  if self.time < 0 then -- cleared when the message id "done"
+--    self.index = utils.backward(self.index, TEXTS)
+    direction = 'backward'
+  elseif self.time > self.delay then
+    self.index = utils.forward(self.index, TEXTS)
+    direction = 'forward'
+  else
     return
   end
-  self.time = 0
 
   -- Pick the next message from the clump.
-  self.index = utils.forward(self.index, TEXTS)
   local text = TEXTS[self.index]
 
   -- Compute the message size and pick a random screen position for it.
@@ -118,10 +125,10 @@ function Hud:update(dt)
     color = 'white',
     position = { x, y },
     size = { width, height },
-    state = 'fade-in',
-    fading_time = 3,
-    idle_time = 10,
-    time = 0
+    state = direction == 'forward' and 'fade-in' or 'fade-out',
+    fading_time = 1,
+    idle_time = 1,
+    time = direction == 'forward' and 0 or 1
   }
 end
 
@@ -135,14 +142,20 @@ function Hud:draw()
   if message.state == 'fade-in' then
     alpha = message.time / message.fading_time
     
-    if message.time >= message.fading_time then
+    if message.time < 0 then
+      message.state = 'done'
+      self.time = self.delay
+    elseif message.time > message.fading_time then
       message.time = 0
       message.state = 'idle'
     end
   elseif message.state == 'idle' then
     alpha = 1.0
   
-    if message.time >= message.idle_time then
+    if message.time < 0 then
+      message.time = message.fading_time
+      message.state = 'fade-in'
+    elseif message.time > message.idle_time then
       message.time = 0
       message.state = 'fade-out'
     end
@@ -150,9 +163,12 @@ function Hud:draw()
     alpha = message.time / message.fading_time
     alpha = 1 - alpha
   
-    if message.time >= message.fading_time then
-      message.time = 0
+    if message.time < 0 then
+      message.time = message.idle_time
+      message.state = 'idle'
+    elseif message.time > message.fading_time then
       message.state = 'done'
+      self.time = 0
     end
   elseif message.state == 'done' then
     self.message = nil
@@ -169,8 +185,8 @@ function Hud:draw()
   end
 end
 
-function Hud:control(direction)
-  self.direction = direction
+function Hud:control(delta)
+  self.delta = delta
 end
 
 -- END OF MODULE ---------------------------------------------------------------

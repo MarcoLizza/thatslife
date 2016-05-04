@@ -115,12 +115,10 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
-  -- Update the input handler and, if some keys are pressed,
-  -- propagate to the state manager.
+  -- Update the input handler. Always propagates the keys state, in order to
+  -- handle also the "no input" case.
   local keys = _input:update(dt)
-  if keys.amount > 0 then
-    _stateful:input(keys, dt)
-  end
+  _stateful:input(keys, dt)
   
   -- Update the state manager.
   local start = love.timer.getTime()

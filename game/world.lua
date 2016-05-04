@@ -97,6 +97,8 @@ function world:input(keys, dt)
     delta = delta + 1
   end
 
+  self.hud:control(delta)
+
   -- Compute the next age according to the player input. It is more like a
   -- "distance". Please note that we need to bound check for negative
   -- values, if the user tries to move "back" beyond the very start. It this
