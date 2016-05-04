@@ -24,6 +24,7 @@ freely, subject to the following restrictions:
 
 local constants = require('game.constants')
 local graphics = require('lib.graphics')
+local utils = require('lib.utils')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -67,9 +68,9 @@ end
 local function measure(lines, face)
   local width, height = 0, 0
   for _, line in ipairs(lines) do
-    local w, h = graphics.measure(face, line)
+    local w, h = graphics.measure(line, face)
     width = math.max(width, w)
-    height = math.max(width, h)
+    height = math.max(height, h)
   end
   return width, height
 end
@@ -77,35 +78,95 @@ end
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Hud:initialize()
+  self:reset()
+end
+
+function Hud:reset()
   self.message = nil
-  self.state = nil
+  self.time = 0
+  self.delay = 10
+  self.index = 0
 end
 
 function Hud:update(dt)
+  -- A message is currently displayed, so just advance it's relative ticker.
+  if self.message then
+    self.message.time = self.message.time + dt
+    return
+  end
+
+  -- Update the message ticker, bailing out while the needed amount of delay
+  -- is not reached. Otherwise, continue by clearing the counter.
+  self.time = self.time + dt
+  if self.time <= self.delay then
+    return
+  end
+  self.time = 0
+
   -- Pick the next message from the clump.
   self.index = utils.forward(self.index, TEXTS)
   local text = TEXTS[self.index]
 
   -- Compute the message size and pick a random screen position for it.
-  local width, height = measure(text, 'retro-computer')
+  local width, height = measure(text, 'silkscreen')
   local x, y = love.math.random(constants.SCREEN_WIDTH - width), love.math.random(constants.SCREEN_HEIGHT - height)
 
-  --
+  -- Create the message "object".
   self.message = {
     text = text,
-    face = 'retro-computer',
+    face = 'silkscreen',
+    color = 'white',
     position = { x, y },
     size = { width, height },
+    state = 'fade-in',
+    fading_time = 3,
+    idle_time = 10,
+    time = 0
   }
 end
 
 function Hud:draw()
-  if not self.message then
+  local message = self.message  
+  if not message then
     return
   end
+  
+  local alpha = nil
+  if message.state == 'fade-in' then
+    alpha = message.time / message.fading_time
+    
+    if message.time >= message.fading_time then
+      message.time = 0
+      message.state = 'idle'
+    end
+  elseif message.state == 'idle' then
+    alpha = 1.0
+  
+    if message.time >= message.idle_time then
+      message.time = 0
+      message.state = 'fade-out'
+    end
+  elseif message.state == 'fade-out' then
+    alpha = message.time / message.fading_time
+    alpha = 1 - alpha
+  
+    if message.time >= message.fading_time then
+      message.time = 0
+      message.state = 'done'
+    end
+  elseif message.state == 'done' then
+    self.message = nil
+  end
 
-  graphics.text(self.message.text, rectangle(self.message.position, self.message.size),
-      'retro-computer', 'white', 'left', 'top')
+  if alpha then
+    local x, y = unpack(message.position)
+    for _, line in ipairs(message.text) do
+      local width, height = graphics.measure(line, 'silkscreen')
+      graphics.text(line, { x, y, x + width, y + height },
+          'silkscreen', 'white', 'left', 'top', 1, math.floor(alpha * 255))
+      y = y + height
+    end
+  end
 end
 
 function Hud:control(direction)

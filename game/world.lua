@@ -27,8 +27,8 @@ local Smoke = require('game.entities.smoke')
 local Bubble = require('game.entities.bubble')
 local constants = require('game.constants')
 local Entities = require('game.entities')
+local Hud = require('game.hud')
 local Scene = require('game.scene.scene')
-local graphics = require('lib.graphics')
 local tweener = require('lib.tweener')
 
 -- MODULE DECLARATION ----------------------------------------------------------
@@ -50,6 +50,9 @@ function world:initialize()
 
   self.entities = Entities.new()
   self.entities:initialize()
+
+  self.hud = Hud.new()
+  self.hud:initialize()
 end
 
 function world:reset()
@@ -80,6 +83,9 @@ function world:reset()
         angle = 0
       })
   self.entities:push(player)
+  
+  -- Reset the HUD state, too.
+  self.hud:reset()
 end
 
 function world:input(keys, dt)
@@ -159,6 +165,7 @@ function world:update(dt)
   end
   
   self.entities:update(dt)
+  self.hud:update(dt)
 end
 
 function world:draw()
@@ -168,6 +175,7 @@ function world:draw()
   end
 
   self.entities:draw()
+  self.hud:draw()
 end
 
 -- END OF MODULE -------------------------------------------------------------

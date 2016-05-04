@@ -224,32 +224,6 @@ function graphics.rectangle(x, y, width, height, color, alpha)
       width, height)
 end
 
-function graphics.frame(x, y, width, height, colors, alpha, size, round)
-  color = type(color) == 'table' and color or COLORS[color]
-  alpha = alpha or 255
-  size = size or 1
-  round = round or 0
-
-  if alpha == 0 then
-    return
-  end
-
-  local r, g, b = unpack(colors[1])
-  love.graphics.setColor({ r, g, b, alpha })
-  love.graphics.rectangle('fill', x, y, width, height, round, round)
-  
-  r, g, b = unpack(colors[2])
-  love.graphics.setColor({ r, g, b, alpha })
-  for _ = 1, size do
-    love.graphics.rectangle('line', x, y, width, height, round, round)
-    
-    x = x + 1
-    y = y + 1
-    width = width - 2
-    height = height - 2
-  end
-end
-
 function graphics.square(x, y, size, color, alpha)
   color = type(color) == 'table' and color or COLORS[color]
   alpha = alpha or 255
@@ -318,7 +292,7 @@ function graphics.measure(text, face, scale)
   local font = FONTS[face]
 
   local width = font:getWidth(text)
-  local height = font:getHeight
+  local height = font:getHeight()
   
   return width * scale, height * scale
 end
