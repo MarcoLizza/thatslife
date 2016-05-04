@@ -41,13 +41,13 @@ end
 
 -- LOCAL CONSTANTS -------------------------------------------------------------
 
-local PHRASES = require('assets.data.phrases')
+local TEXTS = require('assets.data.texts')
 
 -- LOCAL FUNCTIONS -------------------------------------------------------------
 
 -- 'idle', 'fade-in', 'display', 'fade-out'
 
-local offset(rectangle, ox, oy)
+local function offset(rectangle, ox, oy)
   local left, top, right, bottom = unpack(rectangle)
   left = left + ox
   top = top + oy
@@ -56,21 +56,47 @@ local offset(rectangle, ox, oy)
   return { left, top, right, bottom }
 end
 
+local function rectangle(position, size)
+  local x, y = unpack(position)
+  local width, height = unpack(size)
+  return { x, y, x + width, y + height }
+end
+
+-- Scan the message content, line by line, and compute the minimum containing
+-- rectangle.
+local function measure(lines, face)
+  local width, height = 0, 0
+  for _, line in ipairs(lines) do
+    local w, h = graphics.measure(face, line)
+    width = math.max(width, w)
+    height = math.max(width, h)
+  end
+  return width, height
+end
+
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Hud:initialize()
   self.message = nil
   self.state = nil
-  self.position = nil
-  self.canvas = love.graphics.newCanvas(math.floor(constants.SCREEN_WIDTH * 0.33), math.floor(constants.SCREEN_HEIGHT * 0.5))
 end
 
 function Hud:update(dt)
---  self.x = nil
---  self.y = nil
---  self.width = math.max(constants.SCREEN_WIDTH / 2, text_width)
---  self.height = math.max(constants.SCREEN_HEIGHT / 4, text_height)
---  width, height = graphics.measure(message)
+  -- Pick the next message from the clump.
+  self.index = utils.forward(self.index, TEXTS)
+  local text = TEXTS[self.index]
+
+  -- Compute the message size and pick a random screen position for it.
+  local width, height = measure(text, 'retro-computer')
+  local x, y = love.math.random(constants.SCREEN_WIDTH - width), love.math.random(constants.SCREEN_HEIGHT - height)
+
+  --
+  self.message = {
+    text = text,
+    face = 'retro-computer',
+    position = { x, y },
+    size = { width, height },
+  }
 end
 
 function Hud:draw()
@@ -78,16 +104,8 @@ function Hud:draw()
     return
   end
 
-  love.graphics.setCanvas(self.canvas)
-  graphics.frame(0, 0, width, height, {}, 255, 2, 4)
-  graphics.text(message, offset(self.position, 4, 4),
-      'retro-computer', 'yellow', 'left', 'top')
-  love.graphics.setCanvas()
-  
-  love.graphics.setScissor(x, y, width, height)
-  love.graphics.setColor(255, 255, 255, alpha)
-  love.graphics.draw(self.canvas, x, y)
-  love.graphics.setScissor()
+  graphics.text(self.message.text, rectangle(self.message.position, self.message.size),
+      'retro-computer', 'white', 'left', 'top')
 end
 
 function Hud:control(direction)

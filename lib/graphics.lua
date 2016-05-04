@@ -312,6 +312,17 @@ function graphics.image(image, x, y, ox, oy, width, height, alpha)
   love.graphics.setScissor()
 end
 
+function graphics.measure(text, face, scale)
+  scale = scale or 1
+
+  local font = FONTS[face]
+
+  local width = font:getWidth(text)
+  local height = font:getHeight
+  
+  return width * scale, height * scale
+end
+
 function graphics.text(text, rectangle, face, color, halign, valign, scale, alpha)
   color = type(color) == 'table' and color or COLORS[color]
   alpha = alpha or 255
