@@ -65,9 +65,9 @@ function Scene:push(params)
       end)
 end
 
-function Scene:scroll(direction, dt)
+function Scene:scroll(direction)
   for _, layer in ipairs(self.layers) do
-    layer:scroll(direction, dt)
+    layer:scroll(direction)
   end
 end
 

@@ -79,15 +79,10 @@ function love.load(args)
   -- Initializes the input handler.
   _input = Input.new()
   _input:initialize({
-        ['up'] = 'move_vertical',
-        ['down'] = 'move_vertical',
-        ['left'] = 'move_horizontal',
-        ['right'] = 'move_horizontal',
-        ['x'] = 'action',
-        ['z'] = 'action'
+        ['space'] = 'continuous',
+        ['action'] = 'action'
       }, {
-        ['move_horizontal'] = 0,
-        ['move_vertical'] = 0.01,
+        ['continuous'] = 0,
         ['action'] = 0.20
       })
 

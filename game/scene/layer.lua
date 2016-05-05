@@ -54,18 +54,18 @@ function Layer:initialize(params)
   self.alpha = params.alpha -- can be nil, won't fade at all
 end
 
-function Layer:scroll(direction, dt)
-  local sign = 0
-  if direction == 'left' then
-    sign = -1
-  elseif direction == 'right' then
-    sign = 1
-  end
-  self.offset = self.offset + self.speed * sign * dt
+function Layer:scroll(direction)
+  self.direction = direction
 end
 
 function Layer:update(dt)
-  -- This could be useful to implement special layer effects.
+  local sign = 0
+  if self.direction == 'left' then
+    sign = -1
+  elseif self.direction == 'right' then
+    sign = 1
+  end
+  self.offset = self.offset + self.speed * sign * dt
 end
 
 function Layer:draw(alpha)

@@ -46,23 +46,6 @@ local TEXTS = require('assets.data.texts')
 
 -- LOCAL FUNCTIONS -------------------------------------------------------------
 
--- 'idle', 'fade-in', 'display', 'fade-out'
-
-local function offset(rectangle, ox, oy)
-  local left, top, right, bottom = unpack(rectangle)
-  left = left + ox
-  top = top + oy
-  right = right - ox
-  bottom = bottom - oy
-  return { left, top, right, bottom }
-end
-
-local function rectangle(position, size)
-  local x, y = unpack(position)
-  local width, height = unpack(size)
-  return { x, y, x + width, y + height }
-end
-
 -- Scan the message content, line by line, and compute the minimum containing
 -- rectangle.
 local function measure(lines, face)
@@ -86,30 +69,23 @@ function Hud:reset()
   self.time = 0
   self.delay = 2
   self.index = 0
-  self.delta = 0
 end
 
 function Hud:update(dt)
   -- A message is currently displayed, so just advance it's relative ticker.
   if self.message then
-    self.message.time = self.message.time + self.delta * dt
+    self.message.time = self.message.time + dt
     return
   end
 
   -- Update the message ticker, bailing out while the needed amount of delay
   -- is not reached. Otherwise, continue by clearing the counter.
-  self.time = self.time + self.delta * dt
-  
-  local direction
-  if self.time < 0 then -- cleared when the message id "done"
---    self.index = utils.backward(self.index, TEXTS)
-    direction = 'backward'
-  elseif self.time > self.delay then
-    self.index = utils.forward(self.index, TEXTS)
-    direction = 'forward'
-  else
+  self.time = self.time + dt
+  if self.time < self.delay then
     return
   end
+  self.index = utils.forward(self.index, TEXTS)
+  self.time = 0
 
   -- Pick the next message from the clump.
   local text = TEXTS[self.index]
@@ -125,15 +101,15 @@ function Hud:update(dt)
     color = 'white',
     position = { x, y },
     size = { width, height },
-    state = direction == 'forward' and 'fade-in' or 'fade-out',
+    state = 'fade-in',
     fading_time = 1,
     idle_time = 1,
-    time = direction == 'forward' and 0 or 1
+    time = 0
   }
 end
 
 function Hud:draw()
-  local message = self.message  
+  local message = self.message
   if not message then
     return
   end
@@ -142,20 +118,14 @@ function Hud:draw()
   if message.state == 'fade-in' then
     alpha = message.time / message.fading_time
     
-    if message.time < 0 then
-      message.state = 'done'
-      self.time = self.delay
-    elseif message.time > message.fading_time then
+    if message.time >= message.fading_time then
       message.time = 0
       message.state = 'idle'
     end
   elseif message.state == 'idle' then
     alpha = 1.0
   
-    if message.time < 0 then
-      message.time = message.fading_time
-      message.state = 'fade-in'
-    elseif message.time > message.idle_time then
+    if message.time >= message.idle_time then
       message.time = 0
       message.state = 'fade-out'
     end
@@ -163,12 +133,8 @@ function Hud:draw()
     alpha = message.time / message.fading_time
     alpha = 1 - alpha
   
-    if message.time < 0 then
-      message.time = message.idle_time
-      message.state = 'idle'
-    elseif message.time > message.fading_time then
+    if message.time >= message.fading_time then
       message.state = 'done'
-      self.time = 0
     end
   elseif message.state == 'done' then
     self.message = nil
@@ -183,10 +149,6 @@ function Hud:draw()
       y = y + height
     end
   end
-end
-
-function Hud:control(delta)
-  self.delta = delta
 end
 
 -- END OF MODULE ---------------------------------------------------------------
