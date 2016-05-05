@@ -24,15 +24,14 @@ freely, subject to the following restrictions:
 
 -- module tweener.lua
 local tweener = {
-  _VERSION = '0.1.0'
+  _VERSION = '0.2.1'
 }
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 -- Creates a tweening linear functor that interpolates between the values [from]
 -- and [to] in [time] seconds. Internally accumulates the current time upon each
--- subsequent call. Returns both the interpolated value and a boolean telling
--- wether the tweening has ended.
+-- subsequent call. Returns both the callback returned values.
 function tweener.linear(time, callback)
   local current = 0
   return function(dt)
@@ -41,7 +40,7 @@ function tweener.linear(time, callback)
       current = time
     end
     local ratio = current / time
-    return callback(ratio), current < time
+    return callback(ratio)
   end
 end
 
