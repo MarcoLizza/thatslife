@@ -23,7 +23,7 @@ freely, subject to the following restrictions:
 -- MODULE DECLARATION ----------------------------------------------------------
 
 local Input = {
-  _VERSION = '0.1.0',
+  _VERSION = '0.2.0',
   keys = nil,
   accumulators = nil
 }
@@ -66,14 +66,10 @@ function Input:update(dt)
         accumulator.time = accumulator.time + dt
       end
 
-      if not key.pressed then -- first key press
+      -- First key press or repeating key.
+      if not key.pressed or accumulator.time >= accumulator.delay then
         keys.amount = keys.amount + 1
         keys.pressed[id] = true
-      else -- repeating key press
-        if accumulator.time > accumulator.delay then
-          keys.amount = keys.amount + 1
-          keys.pressed[id] = true
-        end
       end
     end
 
@@ -83,7 +79,7 @@ function Input:update(dt)
   -- Reset the accumulators whose total time has passed the delay amount
   -- or has not been interacted with in the last iteration.
   for group, accumulator in pairs(self.accumulators) do
-    if accumulator.time > accumulator.delay or not counters[group] then
+    if accumulator.time >= accumulator.delay or not counters[group] then
       accumulator.time = 0
     end
   end
