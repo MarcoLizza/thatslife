@@ -139,7 +139,6 @@ function world:update(dt)
       self.next = next
       self.fader = tweener.linear(1, function(ratio)
             self.next.alpha = ratio
-            self.current.alpha = 1 - ratio
             return ratio < 1
           end)
     end
