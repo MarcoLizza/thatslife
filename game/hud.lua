@@ -58,6 +58,12 @@ local function measure(lines, face)
   return width, height
 end
 
+local function randomize(width, height, margin)
+  local x = love.math.random(constants.SCREEN_WIDTH - margin * 2 - width) + margin
+  local y = love.math.random(constants.SCREEN_HEIGHT - margin * 2- height) + margin
+  return x, y
+end
+
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Hud:initialize()
@@ -92,7 +98,7 @@ function Hud:update(dt)
 
   -- Compute the message size and pick a random screen position for it.
   local width, height = measure(text, 'silkscreen')
-  local x, y = love.math.random(constants.SCREEN_WIDTH - width), love.math.random(constants.SCREEN_HEIGHT - height)
+  local x, y = randomize(width, height, 8)
 
   -- Create the message "object".
   self.message = {
