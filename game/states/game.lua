@@ -23,6 +23,8 @@ freely, subject to the following restrictions:
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
 local Audio = require('lib.audio')
+local graphics = require('lib.graphics')
+local tweener = require('lib.tweener')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -45,11 +47,19 @@ end
 
 function game:enter()
   self.world:reset()
-  
-  self.audio:play('bgm', 0.5)
+
+  -- Start the background music and create a tweener to fade in both the
+  -- graphics and the audio.
+  local bgm = self.audio:play('bgm', 0)
+  self.fader = tweener.linear(5, function(ratio)
+        bgm:setVolume(ratio)
+        self.alpha = math.floor((1 - ratio) * 255)
+        return ratio >= 1.0
+      end)
 end
 
 function game:leave()
+  self.audio:halt('bgm')
 end
 
 function game:input(keys, dt)
@@ -57,14 +67,23 @@ function game:input(keys, dt)
 end
 
 function game:update(dt)
+  if self.fader then
+    local finished = self.fader(dt)
+    if finished then
+      self.fader = nil
+    end
+  end
+  
   self.world:update(dt)
   
+  self.audio:update(dt)
+
   return nil
 end
 
 function game:draw()
   self.world:draw()
-
+  graphics.fill('black', self.alpha)
   love.graphics.setColor(255, 255, 255)
 end
 
