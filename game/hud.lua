@@ -53,14 +53,14 @@ local function measure(lines, face)
   for _, line in ipairs(lines) do
     local w, h = graphics.measure(line, face)
     width = math.max(width, w)
-    height = math.max(height, h)
+    height = height + h
   end
   return width, height
 end
 
 local function randomize(width, height, margin)
   local x = love.math.random(constants.SCREEN_WIDTH - margin * 2 - width) + margin
-  local y = love.math.random(constants.SCREEN_HEIGHT - margin * 2- height) + margin
+  local y = love.math.random(constants.SCREEN_HEIGHT - margin * 2 - height) + margin
   return x, y
 end
 
@@ -108,8 +108,8 @@ function Hud:update(dt)
     position = { x, y },
     size = { width, height },
     state = 'fade-in',
-    fading_time = 1,
-    idle_time = 1,
+    fading_time = 3,
+    idle_time = 1 * #text,
     time = 0
   }
 end
