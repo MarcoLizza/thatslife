@@ -45,7 +45,7 @@ end
 function Audio:initialize(sounds)
   self.sounds = {}
   for id, sound in pairs(sounds) do
-    local source = love.audio.newSource(sound.file, 'static')
+    local source = love.audio.newSource(sound.file, sound.mode or 'static')
     self.sounds[id] = {
         source = source,
         overlayed = sound.overlayed,
