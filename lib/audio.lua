@@ -49,7 +49,8 @@ function Audio:initialize(sounds)
     self.sounds[id] = {
         source = source,
         overlayed = sound.overlayed,
-        looping = sound.looping, instances = {}
+        looping = sound.looping,
+        instances = {}
       }
   end
 end
@@ -75,12 +76,16 @@ function Audio:update(dt)
   end
 end
 
-function Audio:halt()
-  for _, sound in pairs(self.sounds) do
-    for _, instance in ipairs(sound.instances) do
-      instance:stop()
+function Audio:halt(sound_id)
+  for id, sound in pairs(self.sounds) do
+    -- Stop the selected sound (by id) instances, or if not specified halts
+    -- the whole sounds bank.
+    if not sound_id or sound_id == id then
+      for _, instance in ipairs(sound.instances) do
+        instance:stop()
+      end
+      sound.instances = {}
     end
-    sound.instances = {}
   end
 end
 
@@ -112,6 +117,9 @@ function Audio:play(id, volume)
   else
     instance:play()
   end
+
+  -- Return the audio source, so that it could be externally controlled.
+  return instance
 end
 
 -- END OF MODULE ---------------------------------------------------------------
