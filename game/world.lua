@@ -45,9 +45,6 @@ local SCENE = require('assets.data.scene')
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function world:initialize()
-  self.width = constants.SCREEN_WIDTH
-  self.height = constants.SCREEN_HEIGHT
-
   self.entities = Entities.new()
   self.entities:initialize()
 
