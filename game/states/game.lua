@@ -22,6 +22,8 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local Audio = require('lib.audio')
+
 -- MODULE DECLARATION ----------------------------------------------------------
 
 local game = {
@@ -34,10 +36,17 @@ function game:initialize(environment)
   self.environment = environment
 
   self.world:initialize()
+
+  self.audio = Audio.new()
+  self.audio:initialize({
+      ['bgm'] = { file = 'assets/sounds/everyday.ogg', overlayed = false, looping = true, mode = 'stream' }
+    })
 end
 
 function game:enter()
   self.world:reset()
+  
+  self.audio:play('bgm', 0.5)
 end
 
 function game:leave()
