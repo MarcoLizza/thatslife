@@ -67,6 +67,7 @@ function game:input(keys, dt)
 end
 
 function game:update(dt)
+  -- If the fader is defined, update it. Then dismiss it when needed.
   if self.fader then
     local finished = self.fader(dt)
     if finished then
@@ -74,16 +75,28 @@ function game:update(dt)
     end
   end
   
-  self.world:update(dt)
-  
   self.audio:update(dt)
 
+  self.world:update(dt)
+--  if self.world.finished then
+--    self.fader = tweener.linear(5, function(ratio)
+--          self.audio:setVolume(1 - ratio)
+--          self.alpha = math.floor(ratio * 255)
+--          return ratio >= 1.0
+--        end)
+--  end
+  
   return nil
 end
 
 function game:draw()
   self.world:draw()
-  graphics.fill('black', self.alpha)
+
+  -- Fade the display if needed, by overlapping a translucent black rectangle.
+  if self.alpha ~= 255 then
+    graphics.fill('black', self.alpha)
+  end
+
   love.graphics.setColor(255, 255, 255)
 end
 
