@@ -110,6 +110,9 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.update(dt)
+  -- TODO: implement a global tweener pooler. The reference is passed to the
+  -- [stateful] class that push it down to the states.
+  
   -- Update the input handler. Always propagates the keys state, in order to
   -- handle also the "no input" case.
   local keys = _input:update(dt)
