@@ -111,7 +111,7 @@ function Tween:custom(mode, time, callback, id)
   -- If provided, store the new tweener using the [id] as a key. Otherwise, we
   -- consider it "unnamed" and just store at the back of the integer-indexed
   -- part of the table.
-  table.insert(self.active, {
+  table.insert(self.incoming, {
         id = id,
         closure = closure
       })

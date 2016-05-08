@@ -24,7 +24,7 @@ freely, subject to the following restrictions:
 
 local Audio = require('lib.audio')
 local graphics = require('lib.graphics')
-local tweener = require('lib.tweener')
+local Tweener = require('lib.tween')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -37,12 +37,15 @@ local game = {
 function game:initialize(environment)
   self.environment = environment
 
-  self.world:initialize()
+  self.tweener = Tweener.new()
+  self.tweener:initialize()
 
   self.audio = Audio.new()
   self.audio:initialize({
       ['bgm'] = { file = 'assets/sounds/everyday.ogg', overlayed = false, looping = true, mode = 'stream' }
     })
+
+  self.world:initialize()
 end
 
 function game:enter()
@@ -51,7 +54,7 @@ function game:enter()
   -- Start the background music and create a tweener to fade in both the
   -- graphics and the audio.
   local bgm = self.audio:play('bgm', 0)
-  self.fader = tweener.linear(5, function(ratio)
+  self.tweener:linear(5, function(ratio)
         bgm:setVolume(ratio)
         self.alpha = math.floor((1 - ratio) * 255)
         return ratio >= 1.0
@@ -67,14 +70,8 @@ function game:input(keys, dt)
 end
 
 function game:update(dt)
-  -- If the fader is defined, update it. Then dismiss it when needed.
-  if self.fader then
-    local finished = self.fader(dt)
-    if finished then
-      self.fader = nil
-    end
-  end
-  
+  self.tweener:update(dt)
+
   self.audio:update(dt)
 
   self.world:update(dt)

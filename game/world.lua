@@ -29,7 +29,7 @@ local constants = require('game.constants')
 local Entities = require('game.entities')
 local Hud = require('game.hud')
 local Scene = require('game.scene.scene')
-local tweener = require('lib.tweener')
+local Tweener = require('lib.tween')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -44,7 +44,10 @@ local SCENE = require('assets.data.scene')
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function world:initialize()
+function world:initialize(tweener)
+  self.tweener = Tweener.new()
+  self.tweener:initialize()
+
   self.entities = Entities.new()
   self.entities:initialize()
 
@@ -70,6 +73,7 @@ function world:reset()
   self.age = 0
   self.current = self.scenes[1]
   self.next = nil
+  self.progress = true
   self.delta = 0
 
   -- Reset the entity manager and add the the player one at the center of the
@@ -99,22 +103,9 @@ function world:update(dt)
   -- scaling value we can also control the speed of the game.
   local sdt = self.delta * dt
 
-  -- We don't update the current age while fading between scenes. This doesn't
-  -- make sense and render the thinks difficult.
-  local progress = true
-  
-  if self.fader then
-    local running = self.fader(sdt)
-    if running then
-      progress = false
-    else
-      self.fader = nil
-      self.current = self.next
-      self.next = nil
-    end
-  end
+  self.tweener:update(sdt)
 
-  if progress then
+  if self.progress then
     -- Compute the next age according to the player input. It is more like a
     -- "distance".
     self.age = self.age + sdt
@@ -134,9 +125,15 @@ function world:update(dt)
       next.alpha = 0 -- HACK!!!
 
       self.next = next
-      self.fader = tweener.linear(1, function(ratio)
+      self.progress = false
+      
+      self.tweener:linear(1, function(ratio)
             self.next.alpha = ratio
-            return ratio < 1
+            if ratio == 1 then
+              self.current = self.next
+              self.next = nil
+              self.progress = true
+            end
           end)
     end
   end
