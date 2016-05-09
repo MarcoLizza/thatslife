@@ -54,10 +54,10 @@ function game:enter()
   -- Start the background music and create a tweener to fade in both the
   -- graphics and the audio.
   local bgm = self.audio:play('bgm', 0)
-  self.tweener:linear(5, function(ratio)
+  self.tweener:linear(5,
+      function(ratio)
         bgm:setVolume(ratio)
         self.alpha = math.floor((1 - ratio) * 255)
-        return ratio >= 1.0
       end)
 end
 

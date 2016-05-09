@@ -91,7 +91,7 @@ function Tween:linear(time, callback, id)
   self:custom('linear', time, callback, id)
 end
 
-function Tween:custom(mode, time, callback, id)
+function Tween:custom(mode, time, on_update, on_complete, id)
   local current = 0
   local easing = EASING[mode]
   -- Creata a new tweener function (as a "closure"). The tweener will be
@@ -104,9 +104,13 @@ function Tween:custom(mode, time, callback, id)
         if current > time then
           current = time
         end
+        local completed = current == time
         local ratio = current / time
-        local remove = callback(easing(ratio))
-        return remove or ratio == 1
+        local remove = on_update(easing(ratio))
+        if completed and on_complete then
+          on_complete()
+        end
+        return remove or completed
       end
   -- If provided, store the new tweener using the [id] as a key. Otherwise, we
   -- consider it "unnamed" and just store at the back of the integer-indexed

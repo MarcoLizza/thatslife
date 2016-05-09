@@ -44,7 +44,7 @@ local SCENE = require('assets.data.scene')
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function world:initialize(tweener)
+function world:initialize()
   self.tweener = Tweener.new()
   self.tweener:initialize()
 
@@ -127,13 +127,14 @@ function world:update(dt)
       self.next = next
       self.progress = false
       
-      self.tweener:linear(1, function(ratio)
+      self.tweener:linear(1,
+          function(ratio) -- on_update
             self.next.alpha = ratio
-            if ratio == 1 then
-              self.current = self.next
-              self.next = nil
-              self.progress = true
-            end
+          end,
+          function() -- on_complete
+            self.current = self.next
+            self.next = nil
+            self.progress = true
           end)
     end
   end
