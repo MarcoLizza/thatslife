@@ -239,6 +239,15 @@ function utils.angle_to(from, to)
   return math.atan2(ty - fy, tx - fx)
 end
 
+function utils.clear(t, deep)
+  for k, v in pairs(t) do
+    if type(v) == 'table' and deep then
+      utils.clear(v, deep)
+    end
+    t[k] = nil
+  end
+end
+
 -- END OF MODULE ---------------------------------------------------------------
 
 return utils
