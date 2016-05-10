@@ -46,11 +46,14 @@ function Smoke:initialize(parameters)
   self.type = 'smoke'
   self.priority = 1
   self.ephemeral = true
+  self.origin = { unpack(parameters.position) }
   self.radius = parameters.radius
   self.speed = parameters.speed
   self.life = parameters.life
   self.reference = parameters.life
   self.color = parameters.color
+  self.rotation = love.math.random() * math.pi
+  self.spin = love.math.random() * math.pi / 2 + math.pi / 2
 end
 
 function Smoke:update(dt)
@@ -59,11 +62,22 @@ function Smoke:update(dt)
     self.life = self.life - dt
   end
   if self.life <= 0 then
+    self.life = 0
     return
   end
   
+  local alpha = self.life / self.reference
+  local inv_alpha = 1 - alpha
+
+  -- Update the particle rotation.
+  self.rotation = self.rotation + self.spin * dt
+  
   -- Compute the current entity velocity and update its position.
-  self.position = { self:cast(self.speed * dt) }
+  local x, y = unpack(self.origin)
+  local dx, dy = math.cos(self.angle) * self.speed, math.sin(self.angle) * self.speed
+  self.position = { x + easing.linear(inv_alpha) * dx, y + easing.cubic(inv_alpha) * dy }
+  
+--  self.position = { self:cast(self.speed * dt) }
 end
 
 function Smoke:draw()
@@ -71,10 +85,18 @@ function Smoke:draw()
     return
   end
   
-  local cx, cy = unpack(self.position)
+  local x, y = unpack(self.position)
   local alpha = self.life / self.reference
-  local inv_alpha = 1 - alpha
-  graphics.circle(cx, cy, inv_alpha * self.radius, self.color, easing.hill(alpha) * 255)
+  
+  local half_radius = self.radius / 2
+  local cx, cy = x + half_radius, y + half_radius
+  
+  love.graphics.push()
+  love.graphics.translate(cx, cy)
+  love.graphics.rotate(self.rotation)
+  love.graphics.translate(-cx, -cy)
+  graphics.square(x, y, self.radius, self.color, easing.hill(alpha) * 255)
+  love.graphics.pop()
 end
 
 -- END OF MODULE ---------------------------------------------------------------

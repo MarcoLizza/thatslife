@@ -31,6 +31,7 @@ local Hud = require('game.hud')
 local Scene = require('game.scene.scene')
 local Tweener = require('lib.tween')
 local Timer = require('lib.timer')
+local utils = require('lib.utils')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -92,10 +93,10 @@ function world:reset()
         local smoke = Smoke.new()
         smoke:initialize({
               position = { unpack(player.position) },
-              angle = 270 - 15,
+              angle = utils.to_radians(180 + love.math.random() * 30 + 15),
               radius = 4,
-              speed = 8,
-              life = 2,
+              speed = 24,
+              life = 3,
               color = 'white'
             })
         self.entities:push(smoke)
