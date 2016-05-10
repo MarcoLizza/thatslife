@@ -30,6 +30,7 @@ local Entities = require('game.entities')
 local Hud = require('game.hud')
 local Scene = require('game.scene.scene')
 local Tweener = require('lib.tween')
+local Timer = require('lib.timer')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -85,6 +86,20 @@ function world:reset()
         angle = 0
       })
   self.entities:push(player)
+  
+  -- Initialize an "emitter" timer that will pop the smoke periodically.
+  self.emitter = Timer.create(0.5, function()
+        local smoke = Smoke.new()
+        smoke:initialize({
+              position = { unpack(player.position) },
+              angle = 270 - 15,
+              radius = 4,
+              speed = 8,
+              life = 2,
+              color = 'white'
+            })
+        self.entities:push(smoke)
+      end)
   
   -- Reset the HUD state, too.
   self.hud:reset()
@@ -155,8 +170,13 @@ function world:update(dt)
     self.next:update(sdt)
   end
 
-  self.entities:update(sdt)
-  self.hud:update(sdt)
+  self.emitter(sdt) -- update the emitter
+
+  -- The entities animation and the HUD are updated with the plain time
+  -- delta (unscaled) since we want them to animate also when the user is not
+  -- interacting.
+  self.entities:update(dt)
+  self.hud:update(dt)
 end
 
 function world:draw()

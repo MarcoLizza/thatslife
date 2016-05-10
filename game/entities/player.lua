@@ -43,7 +43,7 @@ function Player:initialize(parameters)
   base.initialize(self, parameters)
   
   self.type = 'player'
-  self.priority = 0
+  self.priority = 2
   self.speed = math.pi -- angular speed, of course
   self.radius = 5
   self.life = 10

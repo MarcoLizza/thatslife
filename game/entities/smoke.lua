@@ -40,11 +40,11 @@ local Smoke = soop.class(Entity)
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Smoke:initialize(parameters)
-  local base = self.base()
+  local base = self:base()
   base.initialize(self, parameters)
 
   self.type = 'smoke'
-  self.priority = 4
+  self.priority = 1
   self.ephemeral = true
   self.radius = parameters.radius
   self.speed = parameters.speed
@@ -54,7 +54,7 @@ function Smoke:initialize(parameters)
 end
 
 function Smoke:update(dt)
-  -- Decrease the current bullet life. If "dead" bail out.
+  -- Decrease the current life. If "dead" bail out.
   if self.life > 0 then
     self.life = self.life - dt
   end
@@ -62,7 +62,7 @@ function Smoke:update(dt)
     return
   end
   
-  -- Compute the current bullet velocity and update its position.
+  -- Compute the current entity velocity and update its position.
   self.position = { self:cast(self.speed * dt) }
 end
 
@@ -73,7 +73,8 @@ function Smoke:draw()
   
   local cx, cy = unpack(self.position)
   local alpha = self.life / self.reference
-  graphics.circle(cx, cy, alpha * self.radius, self.color, easing.hill(alpha) * 255)
+  local inv_alpha = 1 - alpha
+  graphics.circle(cx, cy, inv_alpha * self.radius, self.color, easing.hill(alpha) * 255)
 end
 
 -- END OF MODULE ---------------------------------------------------------------

@@ -39,7 +39,7 @@ local Bubble = soop.class(Entity)
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Bubble:initialize(entities, parameters)
-  local base = self.base()
+  local base = self:base()
   base.initialize(self, parameters)
 
   self.type = 'bubble'
