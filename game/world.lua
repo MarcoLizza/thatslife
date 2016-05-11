@@ -24,7 +24,6 @@ freely, subject to the following restrictions:
 
 local Player = require('game.entities.player')
 local Smoke = require('game.entities.smoke')
-local Bubble = require('game.entities.bubble')
 local constants = require('game.constants')
 local Entities = require('game.entities')
 local Hud = require('game.hud')
@@ -96,8 +95,10 @@ function world:reset()
               angle = utils.to_radians(180 + love.math.random() * 30 + 15),
               radius = love.math.random() * 4 + 2,
               speed = love.math.random() * 8 + 24,
-              life = 3,
-              color = 'white'
+              life = love.math.random() * 3 + 2,
+              color = 'white',
+              rotation = love.math.random() * math.pi,
+              spin = love.math.random() * math.pi + math.pi
             })
         self.entities:push(smoke)
       end)

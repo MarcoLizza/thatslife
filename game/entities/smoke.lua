@@ -52,8 +52,8 @@ function Smoke:initialize(parameters)
   self.life = parameters.life
   self.reference = parameters.life
   self.color = parameters.color
-  self.rotation = love.math.random() * math.pi
-  self.spin = love.math.random() * math.pi / 2 + math.pi / 2
+  self.rotation = parameters.rotation
+  self.spin = parameters.spin
 end
 
 function Smoke:update(dt)
