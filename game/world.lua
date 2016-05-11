@@ -108,6 +108,7 @@ function world:reset()
 end
 
 function world:input(keys, dt)
+  -- We just keep track of the user input as a "delta" value.
   self.delta = 0
   if keys.pressed['space'] then
     self.delta = 1
@@ -173,12 +174,14 @@ function world:update(dt)
   end
 
   self.emitter(sdt) -- update the emitter
+  
+  -- The HUD, that displays the texts, is updated only according to user input.
+  self.hud:update(sdt)
 
-  -- The entities animation and the HUD are updated with the plain time
+  -- The entities animations are updated with the plain time
   -- delta (unscaled) since we want them to animate also when the user is not
   -- interacting.
   self.entities:update(dt)
-  self.hud:update(dt)
 end
 
 function world:draw()
