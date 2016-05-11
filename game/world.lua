@@ -76,6 +76,7 @@ function world:reset()
   self.next = nil
   self.progress = true
   self.delta = 0
+  self.state = 'normal'
 
   -- Reset the entity manager and add the the player one at the center of the
   -- screen.
@@ -101,6 +102,11 @@ function world:reset()
               spin = love.math.random() * math.pi + math.pi
             })
         self.entities:push(smoke)
+      end)
+  
+  self.counter = Timer.create(10, function()
+        self.state = 'finishing'
+        self.counter = nil -- auto-dispose!!!
       end)
   
   -- Reset the HUD state, too.
@@ -175,6 +181,10 @@ function world:update(dt)
 
   self.emitter(sdt) -- update the emitter
   
+  if self.counter then
+    self.counter(sdt) -- update the end-of-trip counter
+  end
+
   -- The HUD, that displays the texts, is updated only according to user input.
   self.hud:update(sdt)
 
@@ -190,8 +200,10 @@ function world:draw()
     self.next:draw()
   end
 
+--  if self.state ~= 'normal' then
   self.entities:draw()
   self.hud:draw()
+--  end
 end
 
 -- END OF MODULE -------------------------------------------------------------

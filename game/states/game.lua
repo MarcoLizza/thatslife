@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local constants = require('game.constants')
 local Audio = require('lib.audio')
 local graphics = require('lib.graphics')
 local Tweener = require('lib.tween')
@@ -51,13 +52,38 @@ end
 function game:enter()
   self.world:reset()
 
+  self.tweener:reset()
+  
   -- Start the background music and create a tweener to fade in both the
   -- graphics and the audio.
   local bgm = self.audio:play('bgm', 0)
   self.tweener:linear(5,
       function(ratio)
         bgm:setVolume(ratio)
+      end)
+
+  self.state = 'fade-in'
+  self.alpha = 255
+  self.tweener:linear(3,
+      function(ratio)
         self.alpha = math.floor((1 - ratio) * 255)
+      end,
+      function()
+        self.state = 'intro'
+        self.tweener:linear(5,
+            function(ratio)
+            end,
+            function()
+              self.state = 'intro-out'
+              self.alpha = 191
+              self.tweener:linear(5,
+                  function(ratio)
+                    self.alpha = math.floor((1 - ratio) * 191)
+                  end,
+                  function()
+                    self.state = 'running'
+                  end)
+            end)
       end)
 end
 
@@ -75,13 +101,21 @@ function game:update(dt)
   self.audio:update(dt)
 
   self.world:update(dt)
---  if self.world.finished then
---    self.fader = tweener.linear(5, function(ratio)
---          self.audio:setVolume(1 - ratio)
---          self.alpha = math.floor(ratio * 255)
---          return ratio >= 1.0
---        end)
---  end
+  
+  if self.world.state == 'finishing' then
+    self.world.state = 'finished'
+    
+    self.state = 'fade-out'
+    self.alpha = 0
+    self.tweener:linear(10,
+        function(ratio)
+          self.alpha = math.floor(ratio * 255)
+          love.audio.setVolume(1 - ratio)
+        end,
+        function()
+          self.state = 'done'
+        end)
+  end
   
   return nil
 end
@@ -89,9 +123,29 @@ end
 function game:draw()
   self.world:draw()
 
-  -- Fade the display if needed, by overlapping a translucent black rectangle.
-  if self.alpha ~= 255 then
+  if self.state == 'fade-in' or self.state == 'intro' then
+    graphics.fill('black', 191)
+    graphics.text('THE TRIP',
+      constants.SCREEN_RECT, 'retro-computer', 'white', 'center', 'middle', 2, 191)
+  elseif self.state == 'intro-out' then
     graphics.fill('black', self.alpha)
+    graphics.text('THE TRIP',
+      constants.SCREEN_RECT, 'retro-computer', 'white', 'center', 'middle', 2, self.alpha)
+  elseif self.state == 'done' then
+    graphics.fill('black')
+    graphics.text('THE END',
+      constants.SCREEN_RECT, 'retro-computer', 'white', 'center', 'middle', 2)
+  end
+
+  -- Fade the display if needed, by overlapping a translucent black rectangle.
+  if self.state == 'fade-in' then
+    graphics.fill('black', self.alpha)
+  elseif self.state == 'intro' then
+  elseif self.state == 'intro-out' then
+  elseif self.state == 'running' then
+  elseif self.state == 'fade-out' then
+    graphics.fill('black', self.alpha)
+  elseif self.state == 'done' then
   end
 
   love.graphics.setColor(255, 255, 255)
