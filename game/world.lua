@@ -94,8 +94,8 @@ function world:reset()
         smoke:initialize({
               position = { unpack(player.position) },
               angle = utils.to_radians(180 + love.math.random() * 30 + 15),
-              radius = 4,
-              speed = 24,
+              radius = love.math.random() * 4 + 2,
+              speed = love.math.random() * 8 + 24,
               life = 3,
               color = 'white'
             })

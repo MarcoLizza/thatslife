@@ -74,8 +74,8 @@ function Smoke:update(dt)
   
   -- Compute the current entity velocity and update its position.
   local x, y = unpack(self.origin)
-  local dx, dy = math.cos(self.angle) * self.speed, math.sin(self.angle) * self.speed
-  self.position = { x + easing.linear(inv_alpha) * dx, y + easing.cubic(inv_alpha) * dy }
+  local sx, sy = math.cos(self.angle) * self.speed, math.sin(self.angle) * self.speed
+  self.position = { x + easing.linear(inv_alpha) * sx, y + easing.cubic(inv_alpha) * sy }
   
 --  self.position = { self:cast(self.speed * dt) }
 end
@@ -88,14 +88,18 @@ function Smoke:draw()
   local x, y = unpack(self.position)
   local alpha = self.life / self.reference
   
-  local half_radius = self.radius / 2
+  -- The particle radius is dinamically calculated. It become bigger as the
+  -- time progresses.
+  local radius  = self.radius * (1 - easing.cubic(alpha))
+  local half_radius = radius / 2
+
   local cx, cy = x + half_radius, y + half_radius
-  
+ 
   love.graphics.push()
   love.graphics.translate(cx, cy)
   love.graphics.rotate(self.rotation)
   love.graphics.translate(-cx, -cy)
-  graphics.square(x, y, self.radius, self.color, easing.hill(alpha) * 255)
+  graphics.square(x, y, radius, self.color, easing.hill(alpha) * 255)
   love.graphics.pop()
 end
 
