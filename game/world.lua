@@ -71,12 +71,12 @@ function world:reset()
   -- Reset the world "age" to zero. Also, pick the first scene as the current
   -- one and clear the "next" scene reference (will be detected automatically
   -- depending on the age)
+  self.state = 'normal'
   self.age = 0
   self.current = self.scenes[1]
   self.next = nil
   self.progress = true
   self.delta = 0
-  self.state = 'normal'
 
   -- Reset the entity manager and add the the player one at the center of the
   -- screen.
@@ -104,11 +104,6 @@ function world:reset()
         self.entities:push(smoke)
       end)
   
-  self.counter = Timer.create(10, function()
-        self.state = 'finishing'
-        self.counter = nil -- auto-dispose!!!
-      end)
-  
   -- Reset the HUD state, too.
   self.hud:reset()
 end
@@ -133,6 +128,11 @@ function world:update(dt)
     -- Compute the next age according to the player input. It is more like a
     -- "distance".
     self.age = self.age + sdt
+
+    -- If the world is old enough, finish it... :)
+    if self.state == 'normal' and self.age >= 100 then
+      self.state = 'finishing'
+    end
 
     -- Find the scene to which the current age/distance belongs to.
     local next = nil
@@ -180,10 +180,6 @@ function world:update(dt)
   end
 
   self.emitter(sdt) -- update the emitter
-  
-  if self.counter then
-    self.counter(sdt) -- update the end-of-trip counter
-  end
 
   -- The HUD, that displays the texts, is updated only according to user input.
   self.hud:update(sdt)
@@ -200,10 +196,8 @@ function world:draw()
     self.next:draw()
   end
 
---  if self.state ~= 'normal' then
   self.entities:draw()
   self.hud:draw()
---  end
 end
 
 -- END OF MODULE -------------------------------------------------------------
