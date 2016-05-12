@@ -56,39 +56,29 @@ function game:enter()
   
   -- Start the background music and create a tweener to fade in both the
   -- graphics and the audio.
-  local bgm = self.audio:play('bgm', 0)
+  self.audio:play('bgm', 0)
   self.tweener:linear(5,
       function(ratio)
-        bgm:setVolume(ratio)
+        love.audio.setVolume(ratio)
       end)
 
-  self.state = 'fade-in'
-  self.alpha = 255
-  self.tweener:linear(3,
-      function(ratio)
-        self.alpha = math.floor((1 - ratio) * 255)
-      end,
-      function()
-        self.state = 'intro'
-        self.tweener:linear(5,
-            function(ratio)
-            end,
-            function()
-              self.state = 'intro-out'
-              self.alpha = 191
-              self.tweener:linear(5,
-                  function(ratio)
-                    self.alpha = math.floor((1 - ratio) * 191)
-                  end,
-                  function()
-                    self.state = 'running'
-                  end)
-            end)
-      end)
+  --
+  self.sequence = {
+    { 'fade-in', 3, 255, function(ratio)
+          self.alpha = math.floor((1 - ratio) * 255)
+        end },
+    { 'intro', 5, 255, nil },
+    { 'intro-out', 5, 191, function(ratio)
+          self.alpha = math.floor((1 - ratio) * 191)
+        end },
+    { 'running', 0, 255, nil }
+  }
+  self.sequence_index = 0
+  self.sequence_move_to_next = true
 end
 
 function game:leave()
-  self.audio:halt('bgm')
+  self.audio:halt()
 end
 
 function game:input(keys, dt)
@@ -102,6 +92,25 @@ function game:update(dt)
 
   self.world:update(dt)
   
+  --
+  if self.sequence_move_to_next and self.sequence_index < #self.sequence then
+    self.sequence_index = self.sequence_index + 1
+    local state, timeout, alpha, on_update = unpack(self.sequence[self.sequence_index])
+    self.state = state
+    self.alpha = alpha
+    self.sequence_move_to_next = false
+    self.tweener:linear(timeout,
+        function(ratio)
+          if on_update then
+            on_update(ratio)
+          end
+        end,
+        function()
+          self.sequence_move_to_next = true
+        end)
+  end
+
+  --
   if self.world.state == 'finishing' then
     self.world.state = 'finished'
     
