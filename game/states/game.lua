@@ -56,7 +56,7 @@ function game:enter()
   
   -- Start the background music and create a tweener to fade in both the
   -- graphics and the audio.
-  self.audio:play('bgm', 0)
+  self.audio:play('bgm', 1.0)
   self.tweener:linear(5,
       function(ratio)
         love.audio.setVolume(ratio)

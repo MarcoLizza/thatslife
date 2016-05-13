@@ -63,6 +63,10 @@ function Entity:cast(modulo)
   return cx + vx, cy + vy
 end
 
+function Entity:rotate(delta)
+  self.angle = self.angle + delta
+end
+
 -- END OF MODULE ---------------------------------------------------------------
 
 return Entity
