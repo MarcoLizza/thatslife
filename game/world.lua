@@ -82,7 +82,7 @@ function world:reset()
   self.entities:reset()
   local player = Player.new()
   player:initialize({
-        position = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT / 2},
+        position = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 64},
         angle = 0
       })
   self.entities:push(player)

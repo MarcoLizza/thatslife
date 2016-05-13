@@ -23,6 +23,7 @@ freely, subject to the following restrictions:
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
 local Entity = require('game.entities.entity')
+--local Animator = require('lib.animator')
 local graphics = require('lib.graphics')
 local soop = require('lib.soop')
 
@@ -44,9 +45,8 @@ function Player:initialize(parameters)
   
   self.type = 'player'
   self.priority = 2
-  self.speed = math.pi -- angular speed, of course
-  self.radius = 5
-  self.life = 10
+  self.radius = 8
+  self.life = 1
 end
 
 function Player:update(dt)
@@ -58,13 +58,9 @@ function Player:draw()
   local cx, cy = unpack(self.position)
   local x, y = self:cast(self.radius)
 
-  graphics.circle(cx, cy, self.radius, 'white')
+  graphics.circle(cx, cy, self.radius, 'blue')
 --  graphics.line(cx, cy, x, y, 'blue')
-  graphics.circle(x, y , 2, 'gray')
-end
-
-function Player:rotate(delta)
-  self.angle = self.angle + delta
+  graphics.circle(x, y , 2, 'yellow')
 end
 
 -- END OF MODULE ---------------------------------------------------------------
