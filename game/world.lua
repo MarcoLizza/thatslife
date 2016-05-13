@@ -75,7 +75,6 @@ function world:reset()
   self.age = 0
   self.current = self.scenes[1]
   self.next = nil
-  self.progress = true
   self.delta = 0
 
   -- Reset the entity manager and add the the player one at the center of the
@@ -124,7 +123,7 @@ function world:update(dt)
 
   self.tweener:update(sdt)
 
-  if self.progress then
+  if not self.next then
     -- Compute the next age according to the player input. It is more like a
     -- "distance".
     self.age = self.age + sdt
@@ -148,17 +147,15 @@ function world:update(dt)
     if self.current ~= next then
       next.alpha = 0 -- HACK!!!
 
-      self.next = next
-      self.progress = false
+      self.next = next -- halt pogression during fading
       
       self.tweener:linear(1,
-          function(ratio) -- on_update
+          function(ratio) -- on_update, make the next scene appear
             self.next.alpha = ratio
           end,
-          function() -- on_complete
+          function() -- on_complete, the next scene becomes the current one
             self.current = self.next
             self.next = nil
-            self.progress = true
           end)
     end
   end
