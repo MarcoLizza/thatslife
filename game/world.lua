@@ -28,7 +28,7 @@ local constants = require('game.constants')
 local Entities = require('game.entities')
 local Hud = require('game.hud')
 local Scene = require('game.scene.scene')
-local Tweener = require('lib.tween')
+local Tweener = require('lib.tweener')
 local Timer = require('lib.timer')
 local utils = require('lib.utils')
 

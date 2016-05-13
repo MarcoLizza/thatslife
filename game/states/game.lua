@@ -25,7 +25,7 @@ freely, subject to the following restrictions:
 local constants = require('game.constants')
 local Audio = require('lib.audio')
 local graphics = require('lib.graphics')
-local Tweener = require('lib.tween')
+local Tweener = require('lib.tweener')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
