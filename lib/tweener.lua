@@ -22,17 +22,16 @@ freely, subject to the following restrictions:
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
--- module tweener.lua
-local Tween = {
-  _VERSION = '0.1.0'
+local Tweener = {
+  _VERSION = '0.1.1'
 }
 
 -- MODULE OBJECT CONSTRUCTOR ---------------------------------------------------
 
-Tween.__index = Tween
+Tweener.__index = Tweener
 
-function Tween.new()
-  local self = setmetatable({}, Tween)
+function Tweener.new()
+  local self = setmetatable({}, Tweener)
   return self
 end
 
@@ -49,17 +48,17 @@ local EASING = {
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Tween:initialize()
+function Tweener:initialize()
   self:reset()
 end
 
-function Tween:reset()
+function Tweener:reset()
   self.active = {}
   self.removed = {}
   self.incoming = {}
 end
 
-function Tween:update(dt)
+function Tweener:update(dt)
   while #self.incoming > 0 do
     local pair = table.remove(self.incoming)
     if pair.id then
@@ -83,15 +82,27 @@ function Tween:update(dt)
   self.removed = {}
 end
 
-function Tween:remove(id)
+function Tweener:remove(id)
   self.removed[id] = true
 end
 
-function Tween:linear(time, callback, id)
+function Tweener:linear(time, callback, id)
   self:custom('linear', time, callback, id)
 end
 
-function Tween:custom(mode, time, on_update, on_complete, id)
+function Tweener:cubic(time, callback, id)
+  self:custom('cubic', time, callback, id)
+end
+
+function Tweener:quadratic(time, callback, id)
+  self:custom('quadratic', time, callback, id)
+end
+
+function Tweener:hill(time, callback, id)
+  self:custom('hill', time, callback, id)
+end
+
+function Tweener:custom(mode, time, on_update, on_complete, id)
   local current = 0
   local easing = EASING[mode]
   -- Creata a new tweener function (as a "closure"). The tweener will be
