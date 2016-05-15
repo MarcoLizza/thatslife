@@ -51,7 +51,7 @@ function Player:initialize(parameters)
   local image = love.graphics.newImage('assets/data/car.png')
   self.animation = Animation.new()
   self.animation:initialize(image, 16, 16)
-  self.animation:configure(6, 'cycle')
+  self.animation:configure(6, nil)
 end
 
 function Player:update(dt)

@@ -37,6 +37,7 @@ end
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
+-- TODO: add flipping!
 function Animation:initialize(image, frame_width, frame_height, offset, count)
   offset = offset or 0
   count = count or math.huge
@@ -67,18 +68,20 @@ function Animation:initialize(image, frame_width, frame_height, offset, count)
   self.quads = quads
   
   self.period = 1 / 50
-  self.mode = 'cycle'
+  self.on_loop = nil
   
   self:reset()
 end
 
-function Animation:configure(frequency, mode)
+function Animation:configure(frequency, on_loop)
   self.period = frequency and (1 / frequency) or self.period
-  self.mode = mode or self.mode
+  self.duration = #self.quads * self.period
+  self.on_loop = on_loop
 end
 
 function Animation:reset()
   self.index = 1 -- FIXME: could depend on the animation mode
+  self.loops = 0
   self.elapsed = 0
   self.running = true
 end
@@ -89,9 +92,16 @@ function Animation:update(dt)
   end
   
   self.elapsed = self.elapsed + dt
-  while self.elapsed > self.period do
-    self.index = (self.index % #self.quads) + 1 -- move to next, damned 1-indices!
-    self.elapsed = self.elapsed - self.period
+  if self.elapsed >= self.duration then
+    local loops = math.floor(self.elapsed / self.duration)
+    if self.on_loop and loops > 0 then
+      self.on_loop(self, self.loops)
+    end
+    self.elapsed = self.elapsed - (loops * self.duration)
+  end
+  
+  if self.running then
+    self.index = math.floor(self.elapsed / self.period) + 1
   end
 end
 
@@ -100,7 +110,7 @@ function Animation:draw(...)
   love.graphics.draw(self.image, quad, ...)
 end
 
-function Animation:suspend()
+function Animation:pause()
   self.running = false
 end
 
@@ -109,9 +119,13 @@ function Animation:resume()
 end
 
 function Animation:seek(index)
-  if index >= 1 and index <= #self.quads then
-    self.index = index
+  -- Negative value indicates that we are indexing backward from the end of
+  -- the sequence.
+  if index < 0 then
+    index = #self.quads - index + 1
   end
+  assert(index >= 1 and index <= #self.quads, 'Index of out range')
+  self.index = index
 end
 
 -- END OF MODULE ---------------------------------------------------------------
