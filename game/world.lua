@@ -43,6 +43,11 @@ local SCENE = require('assets.data.scene')
 
 -- LOCAL FUNCTIONS -------------------------------------------------------------
 
+local function offset(position, dx, dy)
+  local x, y = unpack(position)
+  return x + dx, y + dy
+end
+
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function world:initialize()
@@ -91,7 +96,7 @@ function world:reset()
   self.emitter = Timer.create(0.5, function()
         local smoke = Smoke.new()
         smoke:initialize({
-              position = { unpack(player.position) },
+              position = { offset(player.position, 0, 13) },
               angle = utils.to_radians(180 + love.math.random() * 30 + 15),
               radius = love.math.random() * 4 + 2,
               speed = love.math.random() * 8 + 24,

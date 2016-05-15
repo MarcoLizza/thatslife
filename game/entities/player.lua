@@ -23,7 +23,7 @@ freely, subject to the following restrictions:
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
 local Entity = require('game.entities.entity')
---local Animator = require('lib.animator')
+local Animation = require('lib.animation')
 local graphics = require('lib.graphics')
 local soop = require('lib.soop')
 
@@ -47,9 +47,15 @@ function Player:initialize(parameters)
   self.priority = 2
   self.radius = 8
   self.life = 1
+
+  local image = love.graphics.newImage('assets/data/car.png')
+  self.animation = Animation.new()
+  self.animation:initialize(image, 16, 16)
+  self.animation:configure(6, 'cycle')
 end
 
 function Player:update(dt)
+  self.animation:update(dt)
 end
 
 function Player:draw()
@@ -58,9 +64,11 @@ function Player:draw()
   local cx, cy = unpack(self.position)
   local x, y = self:cast(self.radius)
 
-  graphics.circle(cx, cy, self.radius, 'blue')
+--  graphics.circle(cx, cy, self.radius, 'blue')
 --  graphics.line(cx, cy, x, y, 'blue')
-  graphics.circle(x, y , 2, 'yellow')
+--  graphics.circle(x, y , 2, 'yellow')
+
+  self.animation:draw(cx, cy)
 end
 
 -- END OF MODULE ---------------------------------------------------------------
