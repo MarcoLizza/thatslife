@@ -124,7 +124,6 @@ function Animation:seek(index)
   if index < 0 then
     index = #self.quads - index + 1
   end
-  assert(index >= 1 and index <= #self.quads, 'Index of out range')
   self.index = index
 end
 

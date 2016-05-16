@@ -82,6 +82,11 @@ function game:leave()
 end
 
 function game:input(keys, dt)
+  -- We don't consider input if we are not ready.
+  if self.state ~= 'running' then
+    return
+  end
+  
   self.world:input(keys, dt)
 end
 
