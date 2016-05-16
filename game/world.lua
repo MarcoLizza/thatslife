@@ -85,18 +85,18 @@ function world:reset()
   -- Reset the entity manager and add the the player one at the center of the
   -- screen.
   self.entities:reset()
-  local player = Player.new()
-  player:initialize({
+  self.player = Player.new()
+  self.player:initialize({
         position = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 64},
         angle = 0
       })
-  self.entities:push(player)
+  self.entities:push(self.player)
   
   -- Initialize an "emitter" timer that will pop the smoke periodically.
   self.emitter = Timer.create(0.5, function()
         local smoke = Smoke.new()
         smoke:initialize({
-              position = { offset(player.position, 0, 13) },
+              position = { offset(self.player.position, 0, 13) },
               angle = utils.to_radians(180 + love.math.random() * 30 + 15),
               radius = love.math.random() * 4 + 2,
               speed = love.math.random() * 8 + 24,
@@ -181,7 +181,11 @@ function world:update(dt)
     self.next:update(sdt)
   end
 
-  self.emitter(sdt) -- update the emitter
+  -- Update the player state, according to current movement direction.
+  self.player:change(direction == 'none' and 'still' or 'moving')
+
+  -- We also update the emitters that (ehm) emits the smoke.
+  self.emitter(sdt)
 
   -- The HUD, that displays the texts, is updated only according to user input.
   self.hud:update(sdt)

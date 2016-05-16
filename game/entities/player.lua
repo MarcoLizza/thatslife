@@ -24,7 +24,6 @@ freely, subject to the following restrictions:
 
 local Entity = require('game.entities.entity')
 local Animation = require('lib.animation')
-local graphics = require('lib.graphics')
 local soop = require('lib.soop')
 
 -- MODULE DECLARATION ----------------------------------------------------------
@@ -47,6 +46,7 @@ function Player:initialize(parameters)
   self.priority = 2
   self.radius = 8
   self.life = 1
+  self.state = nil
 
   local image = love.graphics.newImage('assets/data/car.png')
   self.animation = Animation.new()
@@ -58,16 +58,26 @@ function Player:update(dt)
   self.animation:update(dt)
 end
 
+function Player:change(state)
+  -- Bail out if the state doesn't change. This is just an optimization, it
+  -- wouldn't hurt, anyway.
+  if self.state == state then
+    return
+  end
+  self.state = state
+
+  -- The avatar animation is stopped as long as the player input is not active.
+  -- In this case, we keep the animation to the first frame.
+  if state == 'moving' then
+    self.animation:resume()
+  else
+    self.animation:pause()
+    self.animation:seek(1)
+  end
+end
+
 function Player:draw()
-  -- Find the facing point on the circle by casting the current position
-  -- according to the heading angle.
   local cx, cy = unpack(self.position)
-  local x, y = self:cast(self.radius)
-
---  graphics.circle(cx, cy, self.radius, 'blue')
---  graphics.line(cx, cy, x, y, 'blue')
---  graphics.circle(x, y , 2, 'yellow')
-
   self.animation:draw(cx, cy)
 end
 
