@@ -44,6 +44,13 @@ end
 
 local TEXTS = require('assets.data.texts')
 
+local AREA = {
+  math.floor(constants.SCREEN_WIDTH / 8), -- left
+  math.floor(constants.SCREEN_HEIGHT / 8), -- top
+  math.floor(7 * constants.SCREEN_WIDTH / 8), -- right
+  math.floor(3 * constants.SCREEN_HEIGHT / 4) -- bottom
+}
+
 -- LOCAL FUNCTIONS -------------------------------------------------------------
 
 -- Scan the message content, line by line, and compute the minimum containing
@@ -58,9 +65,10 @@ local function measure(lines, face)
   return width, height
 end
 
-local function randomize(width, height, margin)
-  local x = love.math.random(constants.SCREEN_WIDTH - margin * 2 - width) + margin
-  local y = love.math.random(constants.SCREEN_HEIGHT - margin * 2 - height) + margin
+local function randomize(width, height)
+  local left, top, right, bottom = unpack(AREA)
+  local x = love.math.random(left, right - width)
+  local y = love.math.random(top, bottom - height)
   return x, y
 end
 
@@ -92,13 +100,13 @@ function Hud:update(dt)
   end
   self.index = utils.forward(self.index, TEXTS)
   self.time = 0
-
+ 
   -- Pick the next message from the clump.
   local text = TEXTS[self.index]
 
   -- Compute the message size and pick a random screen position for it.
   local width, height = measure(text, 'silkscreen')
-  local x, y = randomize(width, height, 8)
+  local x, y = randomize(width, height)
 
   -- Create the message "object".
   self.message = {
