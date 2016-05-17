@@ -115,6 +115,7 @@ function Hud:update(dt)
       size = { width, height }
     }
   
+    self.state = 'tweening'
     self.tweener:linear(config.messages.fade_time, function(ratio)
           self.message.alpha = ratio
         end,
@@ -122,14 +123,15 @@ function Hud:update(dt)
           self.state = 'idle'
         end)
   elseif self.state == 'idle' then
+    self.state = 'tweening'
     self.tweener:linear(config.messages.idle_time * #self.message.text, function(_)
         end,
         function()
           self.state = 'fade-out'
         end)
   elseif self.state == 'fade-out' then
+    self.state = 'tweening'
     self.tweener:linear(config.messages.fade_time, function(ratio)
-          -- FIXME: nil?
           self.message.alpha = 1 - ratio
         end,
         function()
@@ -137,6 +139,7 @@ function Hud:update(dt)
           self.state = 'wait'
         end)
   elseif self.state == 'wait' then
+    self.state = 'tweening'
     self.tweener:linear(config.messages.wait_time, function(_)
         end,
         function()
