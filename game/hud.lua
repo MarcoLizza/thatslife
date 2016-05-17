@@ -22,9 +22,11 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local config = require('game.config')
 local constants = require('game.constants')
 local graphics = require('lib.graphics')
 local utils = require('lib.utils')
+local Tweener = require('lib.tweener')
 
 -- MODULE DECLARATION ----------------------------------------------------------
 
@@ -54,7 +56,7 @@ local AREA = {
 -- LOCAL FUNCTIONS -------------------------------------------------------------
 
 -- Scan the message content, line by line, and compute the minimum containing
--- rectangle.
+-- rectangle (width and height).
 local function measure(lines, face)
   local width, height = 0, 0
   for _, line in ipairs(lines) do
@@ -65,6 +67,8 @@ local function measure(lines, face)
   return width, height
 end
 
+-- Randomize a location for the message to appear, given its [width] and
+-- [height].
 local function randomize(width, height)
   local left, top, right, bottom = unpack(AREA)
   local x = love.math.random(left, right - width)
@@ -75,51 +79,74 @@ end
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
 function Hud:initialize()
+  self.tweener = Tweener.new()
+  self.tweener:initialize()
+  
   self:reset()
 end
 
 function Hud:reset()
   self.message = nil
-  self.time = 0
-  self.delay = 2
   self.index = 0
+  self.state = 'wait'
 end
 
 function Hud:update(dt)
-  -- A message is currently displayed, so just advance it's relative ticker.
-  if self.message then
-    self.message.time = self.message.time + dt
-    return
+  self.tweener:update(dt)
+
+  if self.state == 'fade-in' then
+    -- A message is currently displayed, so just advance it's relative ticker.
+    self.index = utils.forward(self.index, TEXTS)
+
+    -- Pick the next message from the clump.
+    local text = TEXTS[self.index]
+
+    -- Compute the message size and pick a random screen position for it.
+    local width, height = measure(text, 'silkscreen')
+    local x, y = randomize(width, height)
+
+    -- Create the message "object".
+    self.message = {
+      text = text,
+      face = 'silkscreen',
+      color = 'white',
+      alpha = 0,
+      position = { x, y },
+      size = { width, height }
+    }
+  
+    self.tweener:linear(config.messages.fade_time, function(ratio)
+          self.message.alpha = ratio
+        end,
+        function()
+          self.state = 'idle'
+        end)
+  elseif self.state == 'idle' then
+    self.tweener:linear(config.messages.idle_time * #self.message.text, function(_)
+        end,
+        function()
+          self.state = 'fade-out'
+        end)
+  elseif self.state == 'fade-out' then
+    self.tweener:linear(config.messages.fade_time, function(ratio)
+          -- FIXME: nil?
+          self.message.alpha = 1 - ratio
+        end,
+        function()
+          self.message = nil
+          self.state = 'wait'
+        end)
+  elseif self.state == 'wait' then
+    self.tweener:linear(config.messages.wait_time, function(_)
+        end,
+        function()
+          if self.index < #TEXTS then
+            self.state = 'fade-in'
+          else
+            self.state = 'finished'
+          end
+        end)
   end
-
-  -- Update the message ticker, bailing out while the needed amount of delay
-  -- is not reached. Otherwise, continue by clearing the counter.
-  self.time = self.time + dt
-  if self.time < self.delay then
-    return
-  end
-  self.index = utils.forward(self.index, TEXTS)
-  self.time = 0
- 
-  -- Pick the next message from the clump.
-  local text = TEXTS[self.index]
-
-  -- Compute the message size and pick a random screen position for it.
-  local width, height = measure(text, 'silkscreen')
-  local x, y = randomize(width, height)
-
-  -- Create the message "object".
-  self.message = {
-    text = text,
-    face = 'silkscreen',
-    color = 'white',
-    position = { x, y },
-    size = { width, height },
-    state = 'fade-in',
-    fading_time = 3,
-    idle_time = 1 * #text,
-    time = 0
-  }
 end
 
 function Hud:draw()
@@ -127,41 +154,14 @@ function Hud:draw()
   if not message then
     return
   end
-  
-  local alpha = nil
-  if message.state == 'fade-in' then
-    alpha = message.time / message.fading_time
-    
-    if message.time >= message.fading_time then
-      message.time = 0
-      message.state = 'idle'
-    end
-  elseif message.state == 'idle' then
-    alpha = 1.0
-  
-    if message.time >= message.idle_time then
-      message.time = 0
-      message.state = 'fade-out'
-    end
-  elseif message.state == 'fade-out' then
-    alpha = message.time / message.fading_time
-    alpha = 1 - alpha
-  
-    if message.time >= message.fading_time then
-      message.state = 'done'
-    end
-  elseif message.state == 'done' then
-    self.message = nil
-  end
 
-  if alpha then
-    local x, y = unpack(message.position)
-    for _, line in ipairs(message.text) do
-      local width, height = graphics.measure(line, 'silkscreen')
-      graphics.text(line, { x, y, x + width, y + height },
-          'silkscreen', 'white', 'left', 'top', 1, math.floor(alpha * 255))
-      y = y + height
-    end
+  local x, y = unpack(message.position)
+  local alpha = math.floor(message.alpha * 255)
+  for _, line in ipairs(message.text) do
+    local width, height = graphics.measure(line, 'silkscreen')
+    graphics.text(line, { x, y, x + width, y + height },
+        'silkscreen', 'white', 'left', 'top', 1, alpha)
+    y = y + height
   end
 end
 
