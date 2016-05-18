@@ -86,6 +86,9 @@ function Player:change(state)
 end
 
 function Player:draw()
+  -- Making sure not to colorize the sprite!
+  love.graphics.setColor(255, 255, 255)
+  
   local cx, cy = unpack(self.position)
   self.animator:draw(cx, cy)
 end
