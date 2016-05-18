@@ -94,6 +94,12 @@ end
 function Hud:update(dt)
   self.tweener:update(dt)
 
+  -- We are using a FSM driven by the tweener. According to the current
+  -- state we create a tweener that updates the message properties and,
+  -- upon completion, creates switches to the next state.
+  --
+  -- Note that we need to use a "tweening" intermediate state, used
+  -- during the tweening, or we end up creating multiple tweener instances.
   if self.state == 'fade-in' then
     -- A message is currently displayed, so just advance it's relative ticker.
     self.index = utils.forward(self.index, TEXTS)
@@ -160,6 +166,8 @@ function Hud:draw()
 
   local x, y = unpack(message.position)
   local alpha = math.floor(message.alpha * 255)
+
+  -- Scan the message content, line by line, and draw it!
   for _, line in ipairs(message.text) do
     local width, height = graphics.measure(line, 'silkscreen')
     graphics.text(line, { x, y, x + width, y + height },

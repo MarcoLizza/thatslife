@@ -61,6 +61,8 @@ end
 function Tweener:update(dt)
   while #self.incoming > 0 do
     local pair = table.remove(self.incoming)
+    -- Unnamed closure will at the back be stored in the "indexed" part of
+    -- the table.
     if pair.id then
       self.active[pair.id] = pair.closure
     else
@@ -105,7 +107,7 @@ end
 function Tweener:custom(mode, time, on_update, on_complete, id)
   local current = 0
   local easing = EASING[mode]
-  -- Creata a new tweener function (as a "closure"). The tweener will be
+  -- Create a new tweener function (as a "closure"). The tweener will be
   -- removed from the list either in one of the following cases
   --   i) the tweening time is elapsed, or
   --   ii) the callback function returns a non-nil value, or
