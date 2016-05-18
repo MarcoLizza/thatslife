@@ -23,7 +23,7 @@ freely, subject to the following restrictions:
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
 local Entity = require('game.entities.entity')
-local Animation = require('lib.animation')
+local Animator = require('lib.animator')
 local soop = require('lib.soop')
 
 -- MODULE DECLARATION ----------------------------------------------------------
@@ -48,14 +48,24 @@ function Player:initialize(parameters)
   self.life = 1
   self.state = nil
 
-  local image = love.graphics.newImage('assets/data/car.png')
-  self.animation = Animation.new()
-  self.animation:initialize(image, 16, 16)
-  self.animation:configure(6, nil)
+  self.animator = Animator.new()
+  self.animator:initialize(
+      {
+        defaults = {
+          width = 16,
+          height = 16,
+          frequency = 6,
+          on_loop = nil
+        },
+        animations = {
+          ['running'] = { filename = 'assets/data/car.png' }
+        }
+      })
+  self.animator:switch_to('running')
 end
 
 function Player:update(dt)
-  self.animation:update(dt)
+  self.animator:update(dt)
 end
 
 function Player:change(state)
@@ -69,16 +79,15 @@ function Player:change(state)
   -- The avatar animation is stopped as long as the player input is not active.
   -- In this case, we keep the animation to the first frame.
   if state == 'moving' then
-    self.animation:resume()
+    self.animator:resume()
   else
-    self.animation:pause()
-    self.animation:seek(1)
+    self.animator:pause()
   end
 end
 
 function Player:draw()
   local cx, cy = unpack(self.position)
-  self.animation:draw(cx, cy)
+  self.animator:draw(cx, cy)
 end
 
 -- END OF MODULE ---------------------------------------------------------------

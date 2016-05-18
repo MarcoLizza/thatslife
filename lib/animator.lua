@@ -20,16 +20,14 @@ freely, subject to the following restrictions:
 
 ]]--
 
+-- MODULE INCLUSIONS -----------------------------------------------------------
+
+local Animation = require('lib.animation')
+
 -- MODULE DECLARATION ----------------------------------------------------------
 
 local Animator = {
-  _VERSION = '0.1.0',
-  animations = {},
-  period = 1 / 50,
-  animation = nil,
-  elapsed = 0,
-  frame = nil,
-  running = nil
+  _VERSION = '0.1.0'
 }
 
 -- MODULE OBJECT CONSTRUCTOR ---------------------------------------------------
@@ -41,54 +39,85 @@ function Animator.new()
   return self
 end
 
+-- LOCAL CONSTANTS -------------------------------------------------------------
+
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Animator:initialize(animations, frequency)
+--{
+--  defaults = {
+--    width = 16,
+--    height = 16,
+--    frequency = 6,
+--    on_loop = nil,
+--  },
+--  animations = {
+--    ['running'] = { filename = 'assets/image.png', offset = 0, count = 2 }
+--  }
+--}
+function Animator:initialize(parameters)
+  local images = {}
+
+  local defaults = parameters.defaults
+  
+  local animations = {}
+  for id, specs in pairs(parameters.animations) do
+    -- Search in the images' cache for the specified image. If not present,
+    -- load and update the cache content.
+    local image = images[specs.filename]
+    if not image then
+      image = love.graphics.newImage(specs.filename)
+      images[specs.filename] = image
+    end
+
+    -- Create the animation and configure it.
+    local animation = Animation.new()
+    animation:initialize(image, specs.width or defaults.width, specs.height or defaults.height,
+        specs.offset, specs.count)
+    animation:configure(specs.frequency or defaults.frequency, specs.on_loop or defaults.on_loop)
+
+    animations[id] = animation
+  end
+
+  self.images = images
   self.animations = animations
-  self.period = 1 / (frequency or 50)
+  self.current = nil
 end
 
 function Animator:update(dt)
-  if not self.animation or not self.running then
-    return
-  end
-  
-  self.elapsed = self.elapsed + dt
-  while self.elapsed > self.period do
-    self.frame = (self.frame % #self.animation) + 1 -- move to next, damned 1-indices!
-    self.elapsed = self.elapsed - self.period
-  end
+  self.current:update(dt)
 end
 
-function Animator:switch_to(index, reset)
-  if reset or true then
-    self.elapsed = 0
-    self.frame = nil
-    self.running = true
-  end
+function Animator:draw(...)
+  self.current:draw(...)
+end
 
+function Animator:switch_to(index, sync)
   if self.animations[index] then
-    self.animation = self.animations[index]
-    self.frame = 1
+    local animation = self.animations[index]
+    if self.current ~= animation then
+      animation:rewind()
+      if sync then
+        animation:seek(self.current.index)
+      end
+      self.current = animation
+    end
   end
 end
 
 function Animator:pause()
-  self.running = false
+  self.current:pause()
 end
 
 function Animator:resume()
-  self.running = true
+  self.current:resume()
+end
+
+function Animator:rewind()
+  self.current:rewind()
 end
 
 function Animator:seek(frame)
-  if frame >= 1 and frame <= #self.animation then
-    self.frame = frame
-  end
-end
-
-function Animator:get_frame()
-  return self.animation[self.frame]
+  self.current:seek(frame)
 end
 
 -- END OF MODULE ---------------------------------------------------------------

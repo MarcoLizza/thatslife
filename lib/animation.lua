@@ -37,26 +37,25 @@ end
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
--- TODO: add flipping!
-function Animation:initialize(image, frame_width, frame_height, offset, count)
+function Animation:initialize(image, width, height, offset, count)
   offset = offset or 0
   count = count or math.huge
 
   -- The frames are organized in the sheet in row-by-colums fashion,
   -- so we can get dynamically the amount of tiles with a couple of
   -- simple division.
-  local columns = math.floor(image:getWidth() / frame_width)
-  local rows = math.floor(image:getHeight() / frame_height)
+  local columns = math.floor(image:getWidth() / width)
+  local rows = math.floor(image:getHeight() / height)
   local quads = {}
   for i = 1, rows do
     for j = 1, columns do
       if offset <= 0 then
-        quads[#quads + 1] = love.graphics.newQuad((j - 1) * frame_width, (i - 1) * frame_height,
-          frame_width, frame_height, image:getWidth(), image:getHeight())
+        quads[#quads + 1] = love.graphics.newQuad((j - 1) * width, (i - 1) * height,
+          width, height, image:getWidth(), image:getHeight())
       end
-      
+
       offset = offset - 1
-    
+
       count = count - 1
       if count <= 0 then
         break
@@ -69,21 +68,16 @@ function Animation:initialize(image, frame_width, frame_height, offset, count)
   
   self.period = 1 / 50
   self.on_loop = nil
+  self.running = true
   
-  self:reset()
+  self.index = 1
+  self.elapsed = 0
 end
 
 function Animation:configure(frequency, on_loop)
   self.period = frequency and (1 / frequency) or self.period
   self.duration = #self.quads * self.period
   self.on_loop = on_loop
-end
-
-function Animation:reset()
-  self.index = 1 -- FIXME: could depend on the animation mode
-  self.loops = 0
-  self.elapsed = 0
-  self.running = true
 end
 
 function Animation:update(dt)
@@ -95,7 +89,7 @@ function Animation:update(dt)
   if self.elapsed >= self.duration then
     local loops = math.floor(self.elapsed / self.duration)
     if self.on_loop and loops > 0 then
-      self.on_loop(self, self.loops)
+      self.on_loop(self, loops)
     end
     self.elapsed = self.elapsed - (loops * self.duration)
   end
@@ -118,6 +112,10 @@ function Animation:resume()
   self.running = true
 end
 
+function Animation:rewind()
+  self:seek(1)
+end
+
 function Animation:seek(index)
   -- Negative value indicates that we are indexing backward from the end of
   -- the sequence.
@@ -125,6 +123,10 @@ function Animation:seek(index)
     index = #self.quads - index + 1
   end
   self.index = index
+
+  -- Clear the animation timer when the frame is forced to change, since we
+  -- want the frequency to be respected.
+  self.elapsed = 0
 end
 
 -- END OF MODULE ---------------------------------------------------------------
