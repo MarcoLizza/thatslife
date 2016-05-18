@@ -30,29 +30,61 @@ return {
         depth = 0,
         offset = 0,
         speed = 50,
-        file = 'assets/S01L03.png',
+        file = 'assets/S01L07.png',
         alpha = 1
       },
       {
         position = { 0, 0 },
         depth = 1,
         offset = 0,
-        speed = 15,
-        file = 'assets/S01L02.png',
+        speed = 45,
+        file = 'assets/S01L06.png',
         alpha = 1
       },
       {
         position = { 0, 0 },
         depth = 2,
         offset = 0,
-        speed = 5,
+        speed = 35,
+        file = 'assets/S01L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S01L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S01L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = 0.1,
+        file = 'assets/S01L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
         file = 'assets/S01L01.png',
         alpha = 1
       }
     }
   },
   {
-    age = 5,
+    age = 30,
     callback = nil,
     layers =  {
       {
@@ -66,7 +98,7 @@ return {
     }
   },
   {
-    age = 10,
+    age = 60,
     callback = function() -- should pass an "alpha" argument, that is the relative scene age
         end,
     layers =  { }
