@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local config = require('game.config')
 local Player = require('game.entities.player')
 local Smoke = require('game.entities.smoke')
 local constants = require('game.constants')
@@ -134,7 +135,7 @@ function world:update(dt)
     self.age = self.age + sdt
 
     -- If the world is old enough, finish it... :)
-    if self.state == 'normal' and self.age >= 100 then
+    if self.state == 'normal' and self.age >= config.game.duration then
       self.state = 'finishing'
     end
 

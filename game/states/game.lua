@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local config = require('game.config')
 local constants = require('game.constants')
 local Audio = require('lib.audio')
 local graphics = require('lib.graphics')
@@ -57,18 +58,18 @@ function game:enter()
   -- Start the background music and create a tweener to fade in both the
   -- graphics and the audio.
   self.audio:play('bgm', 1.0)
-  self.tweener:linear(5,
+  self.tweener:linear(config.game.timeouts.music_in,
       function(ratio)
         love.audio.setVolume(ratio)
       end)
 
   --
   self.sequence = {
-    { 'fade-in', 3, 255, function(ratio)
+    { 'fade-in', config.game.timeouts.fade_in, 255, function(ratio)
           self.alpha = math.floor((1 - ratio) * 255)
         end },
-    { 'intro', 5, 255, nil },
-    { 'intro-out', 5, 191, function(ratio)
+    { 'intro', config.game.timeouts.intro, 255, nil },
+    { 'intro-out', config.game.timeouts.intro_out, 191, function(ratio)
           self.alpha = math.floor((1 - ratio) * 191)
         end },
     { 'running', 0, 255, nil }
@@ -121,7 +122,7 @@ function game:update(dt)
     
     self.state = 'fade-out'
     self.alpha = 0
-    self.tweener:linear(10,
+    self.tweener:linear(config.game.timeouts.fade_out,
         function(ratio)
           self.alpha = math.floor(ratio * 255)
           love.audio.setVolume(1 - ratio)
