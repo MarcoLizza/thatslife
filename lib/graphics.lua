@@ -29,11 +29,9 @@ local constants = require('game.constants')
 local graphics = {
 }
 
--- LOCAL VARIABLES -------------------------------------------------------------
+-- LOCAL CONSTANTS -------------------------------------------------------------
 
 local CHARSET = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~'
-
--- MODULE VARIABLES ------------------------------------------------------------
 
 local COLORS = {
   ['aliceblue'] = { 240, 248, 255 },
@@ -192,7 +190,29 @@ local FONTS = {
   ['silkscreen'] = love.graphics.newImageFont('assets/fonts/silkscreen_normal_8.png', CHARSET)
 }
 
+-- MODULE VARIABLES ------------------------------------------------------------
+
+local _queue = {
+}
+
 -- MODULE FUNCTIONS ------------------------------------------------------------
+
+function graphics.enqueue(closure, z_index)
+  _queue[#_queue + 1] = {
+        closure = closure,
+        z_index = z_index or 0
+      }
+end
+
+function graphics.process()
+  table.sort(_queue, function(a, b)
+      return a.z_index < b.z_index
+     end)
+  for _, v in ipairs(_queue) do
+    v.closure()
+  end
+  _queue = {}
+end
 
 function graphics.fill(color, alpha)
   color = type(color) == 'table' and color or COLORS[color]
