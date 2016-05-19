@@ -69,7 +69,7 @@ return {
         position = { 0, 0 },
         depth = 5,
         offset = 0,
-        speed = 0.1,
+        speed = -0.5,
         file = 'assets/S01L02.png',
         alpha = 1
       },
@@ -86,21 +86,373 @@ return {
   {
     age = 30,
     callback = nil,
-    layers =  {
+    layers = {
       {
         position = { 0, 0 },
         depth = 0,
         offset = 0,
         speed = 50,
-        file = 'assets/love2d.png',
+        file = 'assets/S02L07.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 45,
+        file = 'assets/S02L06.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 35,
+        file = 'assets/S02L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S02L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S02L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = -0.5,
+        file = 'assets/S02L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
+        file = 'assets/S02L01.png',
         alpha = 1
       }
     }
   },
   {
     age = 60,
-    callback = function() -- should pass an "alpha" argument, that is the relative scene age
-        end,
-    layers =  { }
+    callback = nil,
+    layers = {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/S03L07.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 45,
+        file = 'assets/S03L06.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 35,
+        file = 'assets/S03L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S03L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S03L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = -0.5,
+        file = 'assets/S03L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
+        file = 'assets/S03L01.png',
+        alpha = 1
+      }
+    }
+  },
+  {
+    age = 90,
+    callback = nil,
+    layers = {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/S04L07.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 45,
+        file = 'assets/S04L06.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 35,
+        file = 'assets/S04L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S04L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S04L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = -0.5,
+        file = 'assets/S04L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
+        file = 'assets/S04L01.png',
+        alpha = 1
+      }
+    }
+  },
+  {
+    age = 120,
+    callback = nil,
+    layers = {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/S05L07.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 45,
+        file = 'assets/S05L06.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 35,
+        file = 'assets/S05L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S05L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S05L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = -0.5,
+        file = 'assets/S05L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
+        file = 'assets/S05L01.png',
+        alpha = 1
+      }
+    }
+  },
+  {
+    age = 150,
+    callback = nil, -- FIXME: useless!!!
+    layers = {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/S06L07.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 45,
+        file = 'assets/S06L06.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 35,
+        file = 'assets/S06L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S06L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S06L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = -0.5,
+        file = 'assets/S06L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
+        file = 'assets/S06L01.png',
+        alpha = 1
+      }
+    }
+  },
+  {
+    age = 180,
+    callback = nil,
+    layers = {
+      {
+        position = { 0, 0 },
+        depth = 0,
+        offset = 0,
+        speed = 50,
+        file = 'assets/S07L07.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 1,
+        offset = 0,
+        speed = 45,
+        file = 'assets/S07L06.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 2,
+        offset = 0,
+        speed = 35,
+        file = 'assets/S07L05.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 3,
+        offset = 0,
+        speed = 15,
+        file = 'assets/S07L04.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 4,
+        offset = 0,
+        speed = 1,
+        file = 'assets/S07L03.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 5,
+        offset = 0,
+        speed = -0.5,
+        file = 'assets/S07L02.png',
+        alpha = 1
+      },
+      {
+        position = { 0, 0 },
+        depth = 6,
+        offset = 0,
+        speed = 0,
+        file = 'assets/S07L01.png',
+        alpha = 1
+      }
+    }
   }
 }
