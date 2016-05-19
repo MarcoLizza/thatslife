@@ -155,7 +155,7 @@ function world:update(dt)
 
       self.next = next -- halt pogression during fading
       
-      self.tweener:linear(1,
+      self.tweener:linear(config.game.timeouts.scene,
           function(ratio) -- on_update, make the next scene appear
             self.next.alpha = ratio
           end,

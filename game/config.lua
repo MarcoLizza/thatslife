@@ -14,6 +14,7 @@ return {
       intro = 5,
       intro_out = 5,
       fade_out = 10,
+      scene = 5
     },
     duration = 60
   },
