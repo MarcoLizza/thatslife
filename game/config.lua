@@ -16,7 +16,7 @@ return {
       fade_out = 10,
       scene = 5
     },
-    duration = 60
+    duration = 300
   },
   messages = {
     timeouts = {
