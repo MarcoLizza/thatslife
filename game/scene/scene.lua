@@ -82,8 +82,8 @@ function Scene:draw()
     layer:draw(self.alpha)
   end
 
-  if self.callback then
-    self.callback()
+  if self.draw then
+    self.draw()
   end
 end
 
