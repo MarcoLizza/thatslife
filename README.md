@@ -1,8 +1,8 @@
-# THAT'S LIFE
+# THE TRIP
 
 ## INTRODUCTION
 
-*That's Life* is my own personal interpretation of the #1GAM theme, which for April 2016 was set to AGE.
+*The Trip* is my own personal interpretation of the #1GAM theme, which for April 2016 was set to AGE.
 
 Made during #1GAM April 2016 gamejam.
 
