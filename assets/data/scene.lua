@@ -83,7 +83,7 @@ return {
     }
   },
   {
-    age = 30,
+    age = 40,
     layers = {
       {
         position = { 0, 0 },
@@ -144,7 +144,7 @@ return {
     }
   },
   {
-    age = 60,
+    age = 80,
     layers = {
       {
         position = { 0, 0 },
@@ -205,7 +205,7 @@ return {
     }
   },
   {
-    age = 90,
+    age = 120,
     layers = {
       {
         position = { 0, 0 },
@@ -266,7 +266,7 @@ return {
     }
   },
   {
-    age = 120,
+    age = 160,
     layers = {
       {
         position = { 0, 0 },
@@ -327,7 +327,7 @@ return {
     }
   },
   {
-    age = 150,
+    age = 200,
     layers = {
       {
         position = { 0, 0 },
@@ -388,7 +388,7 @@ return {
     }
   },
   {
-    age = 180,
+    age = 240,
     layers = {
       {
         position = { 0, 0 },

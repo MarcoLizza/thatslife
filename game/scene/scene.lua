@@ -44,11 +44,11 @@ end
 
 -- MODULE FUNCTIONS ------------------------------------------------------------
 
-function Scene:initialize(age, callback)
+function Scene:initialize(age, on_draw)
   self.layers = {}
   self.age = age
   self.alpha = 1
-  self.callback = callback
+  self.on_draw = on_draw
 end
 
 function Scene:reset()
@@ -82,8 +82,8 @@ function Scene:draw()
     layer:draw(self.alpha)
   end
 
-  if self.draw then
-    self.draw()
+  if self.on_draw then
+    self.on_draw()
   end
 end
 

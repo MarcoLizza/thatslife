@@ -16,13 +16,14 @@ return {
       fade_out = 10,
       scene = 5
     },
+    night_time = 205,
     duration = 300
   },
   messages = {
     timeouts = {
-      fade = 3,
-      idle = 1,
-      wait = 5
+      fade = 1,
+      idle = 0.5,
+      wait = 3
     }
   }
 }

@@ -31,6 +31,7 @@ local Hud = require('game.hud')
 local Scene = require('game.scene.scene')
 local Tweener = require('lib.tweener')
 local Timer = require('lib.timer')
+local graphics = require('lib.graphics')
 local utils = require('lib.utils')
 
 -- MODULE DECLARATION ----------------------------------------------------------
@@ -67,7 +68,7 @@ function world:reset()
   self.scenes = {}
   for _, params in ipairs(SCENE) do
     local scene = Scene.new()
-    scene:initialize(params.age, params.callback)
+    scene:initialize(params.age, params.on_draw)
     for _, layer in ipairs(params.layers) do
       scene:push(layer)
     end
@@ -205,6 +206,8 @@ function world:draw()
 
   self.entities:draw()
   self.hud:draw()
+--  graphics.text(string.format('AGE: %d', self.age),
+--      constants.SCREEN_RECT, 'silkscreen', 'gray', 'right', 'top', 1)
 end
 
 -- END OF MODULE -------------------------------------------------------------

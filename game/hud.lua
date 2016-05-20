@@ -159,6 +159,9 @@ function Hud:update(dt)
 end
 
 function Hud:draw()
+  graphics.text('[ PRESS SPACE TO MOVE ]',
+    constants.SCREEN_RECT, 'silkscreen', 'white', 'center', 'bottom', 1)
+  
   local message = self.message
   if not message then
     return
