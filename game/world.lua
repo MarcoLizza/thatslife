@@ -88,7 +88,7 @@ function world:reset()
   self.entities:reset()
   self.player = Player.new()
   self.player:initialize({
-        position = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 64},
+        position = { constants.SCREEN_WIDTH / 2, constants.SCREEN_HEIGHT - 56},
         angle = 0
       })
   self.entities:push(self.player)
@@ -183,7 +183,7 @@ function world:update(dt)
   end
 
   -- Update the player state, according to current movement direction.
-  self.player:change(direction == 'none' and 'still' or 'moving')
+  self.player:change(direction == 'none' and 'still' or 'moving', self.age)
 
   -- We also update the emitters that (ehm) emits the smoke.
   self.emitter(sdt)
