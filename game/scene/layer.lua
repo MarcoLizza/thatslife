@@ -49,7 +49,6 @@ function Layer:initialize(params)
   self.position = { unpack(params.position) }
   self.offset = params.offset or 0
   self.speed = params.speed or 0
---  self.callback = params.callback
   self.image = love.graphics.newImage(params.file)
   self.alpha = params.alpha -- can be nil, won't fade at all
 end

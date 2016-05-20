@@ -22,6 +22,7 @@ freely, subject to the following restrictions:
 
 -- MODULE INCLUSIONS -----------------------------------------------------------
 
+local config = require('game.config')
 local Entity = require('game.entities.entity')
 local Animator = require('lib.animator')
 local soop = require('lib.soop')
@@ -58,7 +59,8 @@ function Player:initialize(parameters)
           on_loop = nil
         },
         animations = {
-          ['running'] = { filename = 'assets/data/car.png' }
+          ['running'] = { filename = 'assets/data/car.png' },
+          ['running-night'] = { filename = 'assets/data/car-dark.png' }
         }
       })
   self.animator:switch_to('running')
@@ -68,7 +70,12 @@ function Player:update(dt)
   self.animator:update(dt)
 end
 
-function Player:change(state)
+function Player:change(state, age)
+  -- If the age tells so, switch to dark.
+  if age >= config.game.night_time then
+    self.animator:switch_to('running-night', true) -- synch animations
+  end
+  
   -- Bail out if the state doesn't change. This is just an optimization, it
   -- wouldn't hurt, anyway.
   if self.state == state then
