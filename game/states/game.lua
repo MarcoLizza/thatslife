@@ -76,6 +76,9 @@ function game:enter()
   }
   self.sequence_index = 0
   self.sequence_move_to_next = true
+  
+  -- Initially we a in no particular state.
+  self.state = nil
 end
 
 function game:leave()
@@ -136,6 +139,12 @@ function game:update(dt)
 end
 
 function game:draw()
+  -- At the very first iteration, we haven't set the state so we don't draw
+  -- anything.
+  if not self.state then
+    return
+  end
+  
   self.world:draw()
 
   if self.state == 'fade-in' or self.state == 'intro' then

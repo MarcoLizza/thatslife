@@ -34,7 +34,7 @@ local splash = {
     { mode = 'cross-out', delay = 0.25, file = 'assets/1gam.png' },
     { mode = 'cross-in', delay = 0.25, file = 'assets/love2d.png' },
     { mode = 'display', delay = 5, file = 'assets/love2d.png' },
-    { mode = 'cross-out', delay = 0.25, file = 'assets/love2d.png' }
+    { mode = 'fade-out', delay = 0.25, file = 'assets/love2d.png' }
   }
 }
 
@@ -76,7 +76,7 @@ function splash:update(dt)
     -- need to switch to the game state.
     self.index = self.index + 1
     if self.index > #self.states then
-      return 'menu'
+      return 'game'
     end
 
     -- Get the next state. If an image is defined, pre-load it. Then, we
