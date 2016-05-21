@@ -117,6 +117,11 @@ end
 function world:input(keys, dt)
   -- We just keep track of the user input as a "delta" value.
   self.delta = 0
+  
+  if not keys then
+    return
+  end
+  
   if keys.pressed['space'] then
     self.delta = 1
   end

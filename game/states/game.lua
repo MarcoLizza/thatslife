@@ -83,12 +83,12 @@ function game:leave()
 end
 
 function game:input(keys, dt)
-  -- We don't consider input if we are not ready.
-  if self.state ~= 'running' then
-    return
+  -- We pass a nil input if we are not ready.
+  if self.state == 'running' or self.state == 'fade-out' then
+    self.world:input(keys, dt)
+  else
+    self.world:input(nil, dt)
   end
-  
-  self.world:input(keys, dt)
 end
 
 function game:update(dt)
@@ -98,7 +98,7 @@ function game:update(dt)
 
   self.world:update(dt)
   
-  --
+  -- Process the sequence of tweeners, untils it's finished!
   if self.sequence_move_to_next and self.sequence_index < #self.sequence then
     self.sequence_index = self.sequence_index + 1
     local state, timeout, alpha, on_update = unpack(self.sequence[self.sequence_index])
@@ -116,7 +116,7 @@ function game:update(dt)
         end)
   end
 
-  --
+  -- If the world has come to an end, just fade out.
   if self.world.state == 'finishing' then
     self.world.state = 'finished'
     
