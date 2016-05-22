@@ -2,17 +2,27 @@
 
 ## INTRODUCTION
 
-*The Trip* is my own personal interpretation of the #1GAM theme, which for April 2016 was set to AGE.
+*The Trip* is my own personal interpretation of the [#1GAM](http://onegameamonth.com) theme, which for April 2016 was set to *AGE*.
 
 Made during #1GAM April 2016 gamejam.
 
 ## GAME STATUS
 
+The prototype can, somewhat, can be considered a "complete" game. I frankly don't think any more development will be done in the future.
+
 ## INSTRUCTIONS
+
+Make your trip. A day. A life. Is the measure that changes.
+
+Just keep pressed the *SPACE* key as long as you want to progress. Stop to read the quotes and enjoy the backgrounds. :)
 
 ## TOOLS
 
 The game uses the [LOVE](http://love2d.org) game engine.
+
+Ingame background music has been rendered using [GXSCC](http://www.geocities.co.jp/SiliconValley-SanJose/8700/P/GsorigE.htm), starting from an online avaible MIDI transcription of "Everyday" by Carly Commando.
+
+Graphics have been realized with [Paint.NET](http://www.getpaint.net), with inspiration from an existing 8-bit wallpaper set ([bitday](www.bitday.me)).
 
 ## LICENSE
 
